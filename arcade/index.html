@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Meicat Arcade</title>
+  <link rel="stylesheet" href="arcade.css">
+</head>
+<body>
+  <main class="arcade-page">
+    <section class="arcade-shell" aria-labelledby="gameTitle">
+      <header class="arcade-header">
+        <div>
+          <p class="eyebrow">MEICAT</p>
+          <h1 id="gameTitle">ARCADE</h1>
+        </div>
+        <div class="arcade-account">
+          <span id="usernameDisplay">@username</span>
+          <button id="changeUsername" type="button">CHANGE</button>
+        </div>
+        <div class="hud" aria-live="polite">
+          <div class="hud-item">
+            <span>Score</span>
+            <strong id="scoreValue">0</strong>
+          </div>
+          <div class="hud-item hud-next">
+            <span>Next</span>
+            <div id="nextPreview" class="next-preview" aria-label="Next piece preview"></div>
+          </div>
+        </div>
+      </header>
+
+      <div class="arcade-content">
+        <div class="game-column">
+          <section class="game-frame" aria-label="Suika-style merging game">
+            <canvas id="gameCanvas" width="360" height="600"></canvas>
+            <div class="game-over" id="gameOver" hidden>
+              <p class="eyebrow">MEICAT ARCADE</p>
+              <h2>GAME OVER</h2>
+              <p>Score <strong id="finalScore">0</strong></p>
+              <button id="tryAgain" type="button">TRY AGAIN</button>
+            </div>
+          </section>
+
+          <p class="game-status" id="gameStatus" aria-live="polite">Enter your username to play.</p>
+        </div>
+
+        <aside class="leaderboard-panel" aria-labelledby="leaderboardTitle">
+          <p class="eyebrow">LEADERBOARD</p>
+          <h2 id="leaderboardTitle">TOP PLAYERS</h2>
+          <ol class="leaderboard-list" aria-label="Temporary demo leaderboard">
+            <!-- Temporary demo data only. Not connected to scores or a backend. -->
+            <li><span>1</span><strong>@player1</strong><b>12,500</b></li>
+            <li><span>2</span><strong>@player2</strong><b>10,200</b></li>
+            <li><span>3</span><strong>@player3</strong><b>8,450</b></li>
+            <li><span>4</span><strong>@player4</strong><b>7,900</b></li>
+            <li><span>5</span><strong>@player5</strong><b>6,300</b></li>
+          </ol>
+        </aside>
+      </div>
+
+      <section class="dev-tools" aria-labelledby="devToolsTitle">
+        <div class="dev-heading">
+          <span class="eyebrow">DEV TEST</span>
+          <h2 id="devToolsTitle">Spawn pieces</h2>
+        </div>
+        <div class="dev-buttons">
+          <button type="button" data-spawn-level="1">Spawn Level 1</button>
+          <button type="button" data-spawn-level="2">Spawn Level 2</button>
+          <button type="button" data-spawn-level="5">Spawn Level 5</button>
+          <button type="button" data-spawn-level="10">Spawn Level 10</button>
+          <button type="button" data-clear-board>Clear Board</button>
+        </div>
+      </section>
+    </section>
+  </main>
+
+  <div class="username-gate" id="usernameGate" aria-hidden="true">
+    <div class="username-gate__backdrop"></div>
+    <section
+      class="username-card"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="usernameTitle"
+      aria-describedby="usernameDescription"
+    >
+      <p class="eyebrow">MEICAT ARCADE</p>
+      <h2 id="usernameTitle">ENTER YOUR ZEPETO USERNAME</h2>
+      <p id="usernameDescription">Use your exact username to claim rewards.</p>
+      <form id="usernameForm" novalidate>
+        <label for="usernameInput">ZEPETO username</label>
+        <input id="usernameInput" name="username" type="text" placeholder="@username" autocomplete="username" spellcheck="false" required>
+        <p class="username-error" id="usernameError" role="alert"></p>
+        <button class="username-submit" type="submit">LET'S PLAY</button>
+      </form>
+      <p class="username-note">Rewards will be sent to the ZEPETO username entered.</p>
+    </section>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.20.0/matter.min.js"></script>
+  <script src="arcade.js"></script>
+</body>
+</html>
