@@ -38,6 +38,10 @@
               <p class="eyebrow">MEICAT ARCADE</p>
               <h2>GAME OVER</h2>
               <p>Score <strong id="finalScore">0</strong></p>
+              <div class="game-result" aria-live="polite">
+                <p id="submissionStatus">Saving result...</p>
+                <p id="resultTotals"></p>
+              </div>
               <button id="tryAgain" type="button">TRY AGAIN</button>
             </div>
           </section>
@@ -48,14 +52,8 @@
         <aside class="leaderboard-panel" aria-labelledby="leaderboardTitle">
           <p class="eyebrow">LEADERBOARD</p>
           <h2 id="leaderboardTitle">TOP PLAYERS</h2>
-          <ol class="leaderboard-list" aria-label="Temporary demo leaderboard">
-            <!-- Temporary demo data only. Not connected to scores or a backend. -->
-            <li><span>1</span><strong>@player1</strong><b>12,500</b></li>
-            <li><span>2</span><strong>@player2</strong><b>10,200</b></li>
-            <li><span>3</span><strong>@player3</strong><b>8,450</b></li>
-            <li><span>4</span><strong>@player4</strong><b>7,900</b></li>
-            <li><span>5</span><strong>@player5</strong><b>6,300</b></li>
-          </ol>
+          <ol class="leaderboard-list" id="leaderboardList" aria-label="Top players"></ol>
+          <p class="leaderboard-status" id="leaderboardStatus" role="status">Loading...</p>
         </aside>
       </div>
 

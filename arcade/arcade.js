@@ -24,6 +24,10 @@
   const USERNAME_STORAGE_KEY = "meicatArcadeUsername";
   const MAX_NATURAL_LEVEL = 5;
   const MAX_LEVEL = 11;
+  const SUPABASE_URL = "https://cldpinzembpfsulkombx.supabase.co";
+  const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_2Z9IaBHJolcfAoHwZMiUJQ_jg-aSDON";
+  const SUBMIT_GAME_ENDPOINT =
+    `${SUPABASE_URL}/functions/v1/submit-arcade-game`;
 
   const PIECES = [
     { level: 1, radius: 16, score: 2, fill: "#ef9cba", image: null },
@@ -51,6 +55,10 @@
   const gameOverOverlay = document.getElementById("gameOver");
   const tryAgainButton = document.getElementById("tryAgain");
   const gameStatus = document.getElementById("gameStatus");
+  const leaderboardList = document.getElementById("leaderboardList");
+  const leaderboardStatus = document.getElementById("leaderboardStatus");
+  const submissionStatus = document.getElementById("submissionStatus");
+  const resultTotals = document.getElementById("resultTotals");
   const usernameGate = document.getElementById("usernameGate");
   const usernameForm = document.getElementById("usernameForm");
   const usernameInput = document.getElementById("usernameInput");
@@ -83,6 +91,9 @@
   let aimX = WORLD_WIDTH / 2;
   let gameplayStarted = false;
   let currentUsername = "";
+  let gameRunId = 0;
+  let submittedRunId = null;
+  let leaderboardRequestId = 0;
 
   /* ==========================================================
      USERNAME STATE
@@ -173,6 +184,135 @@
     gameStatus.textContent = "Move, then tap or click to drop.";
     canvas.focus({ preventScroll: true });
     return true;
+  }
+
+  /* ==========================================================
+     SUPABASE LEADERBOARD / RESULTS
+     ========================================================== */
+
+  const supabaseHeaders = {
+    apikey: SUPABASE_PUBLISHABLE_KEY
+  };
+
+  function displayUsername(username) {
+    return username.startsWith("@")
+      ? username
+      : `@${username}`;
+  }
+
+  function renderLeaderboard(players) {
+    leaderboardList.replaceChildren();
+
+    players.slice(0, 10).forEach((player, index) => {
+      const row = document.createElement("li");
+      const rank = document.createElement("span");
+      const username = document.createElement("strong");
+      const bestScore = document.createElement("b");
+
+      rank.textContent = String(index + 1);
+      username.textContent = displayUsername(String(player.username || ""));
+      bestScore.textContent = Number(player.best_score || 0).toLocaleString();
+
+      row.append(rank, username, bestScore);
+      leaderboardList.append(row);
+    });
+
+    leaderboardStatus.textContent = players.length
+      ? ""
+      : "No scores yet.";
+  }
+
+  async function loadLeaderboard() {
+    const requestId = ++leaderboardRequestId;
+    leaderboardStatus.textContent = "Loading...";
+
+    try {
+      const response = await fetch(
+        `${SUPABASE_URL}/rest/v1/arcade_players?select=username,best_score&order=best_score.desc&limit=10`,
+        {
+          headers: supabaseHeaders
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error(`Leaderboard request failed: ${response.status}`);
+      }
+
+      const players = await response.json();
+
+      if (requestId !== leaderboardRequestId) {
+        return;
+      }
+
+      renderLeaderboard(Array.isArray(players) ? players : []);
+    } catch (error) {
+      if (requestId !== leaderboardRequestId) {
+        return;
+      }
+
+      leaderboardList.replaceChildren();
+      leaderboardStatus.textContent = "Leaderboard unavailable.";
+      console.error("Arcade leaderboard load failed:", error);
+    }
+  }
+
+  async function submitCompletedGame(runId, username, finalRunScore) {
+    if (submittedRunId === runId) {
+      return;
+    }
+
+    submittedRunId = runId;
+    submissionStatus.textContent = "Saving result...";
+    resultTotals.textContent = "";
+
+    try {
+      const response = await fetch(SUBMIT_GAME_ENDPOINT, {
+        method: "POST",
+        headers: {
+          ...supabaseHeaders,
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          username,
+          score: finalRunScore
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error(`Game submission failed: ${response.status}`);
+      }
+
+      const result = await response.json();
+
+      if (
+        result.ok !== true ||
+        !result.player ||
+        result.player.pointsEarned == null ||
+        result.player.bestScore == null ||
+        result.player.meiowPoints == null
+      ) {
+        throw new Error("Game submission returned an invalid result");
+      }
+
+      if (runId !== gameRunId || !gameOver) {
+        return;
+      }
+
+      const player = result.player || {};
+      submissionStatus.textContent =
+        `+${Number(player.pointsEarned || 0).toLocaleString()} MEIOW POINTS`;
+      resultTotals.textContent =
+        `BEST ${Number(player.bestScore || 0).toLocaleString()} · MEIOW POINTS ${Number(player.meiowPoints || 0).toLocaleString()}`;
+      loadLeaderboard();
+    } catch (error) {
+      if (runId !== gameRunId || !gameOver) {
+        return;
+      }
+
+      submissionStatus.textContent = "Result could not be saved.";
+      resultTotals.textContent = "";
+      console.error("Arcade game submission failed:", error);
+    }
   }
 
   /* ==========================================================
@@ -281,9 +421,10 @@
     createPiece(level, clampAim(currentPiece.x), radius + 5);
     currentPiece = null;
     gameStatus.textContent = "Piece dropped. Get ready...";
+    const dropRunId = gameRunId;
 
     window.setTimeout(() => {
-      if (gameOver) {
+      if (gameOver || dropRunId !== gameRunId) {
         return;
       }
 
@@ -446,9 +587,19 @@
 
     gameOver = true;
     currentPiece = null;
-    finalScore.textContent = String(score);
+    const finalRunScore = score;
+    const finalRunUsername = currentUsername;
+
+    finalScore.textContent = String(finalRunScore);
+    submissionStatus.textContent = "Saving result...";
+    resultTotals.textContent = "";
     gameOverOverlay.hidden = false;
     gameStatus.textContent = "Board full. Start a new game to play again.";
+    submitCompletedGame(
+      gameRunId,
+      finalRunUsername,
+      finalRunScore
+    );
   }
 
   /* ==========================================================
@@ -476,14 +627,19 @@
   }
 
   function resetGame() {
+    gameRunId += 1;
     clearBoard();
     score = 0;
     gameOver = false;
     dropLocked = false;
     pointerIsDown = false;
+    activePointerId = null;
+    submittedRunId = null;
     aimX = WORLD_WIDTH / 2;
     nextLevel = randomNaturalLevel();
     gameOverOverlay.hidden = true;
+    submissionStatus.textContent = "Saving result...";
+    resultTotals.textContent = "";
     updateScore();
     setCurrentPiece(randomNaturalLevel());
     gameStatus.textContent = "Move, then tap or click to drop.";
@@ -630,6 +786,7 @@
   }
 
   resetGame();
+  loadLeaderboard();
 
   currentUsername = readSavedUsername();
   updateUsernameDisplay();

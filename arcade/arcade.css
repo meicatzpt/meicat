@@ -193,6 +193,27 @@ h1 {
   color: #fff;
 }
 
+.game-result {
+  min-height: 38px;
+  margin: -8px 0 18px;
+}
+
+.game-over .game-result p {
+  margin: 0;
+  color: #ffd0e2;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: .04em;
+}
+
+.game-over .game-result p + p {
+  margin-top: 5px;
+  color: rgba(255, 255, 255, .72);
+  font-size: 10px;
+  font-weight: 650;
+  letter-spacing: .02em;
+}
+
 #tryAgain,
 .dev-buttons button {
   min-height: 38px;
@@ -301,6 +322,13 @@ h1 {
 
 .leaderboard-list b {
   color: #80616e;
+  font-size: 10px;
+}
+
+.leaderboard-status {
+  min-height: 16px;
+  margin: 12px 0 0;
+  color: #a77d8e;
   font-size: 10px;
 }
 
