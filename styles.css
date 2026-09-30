@@ -1,0 +1,6175 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  width: 100%;
+  min-height: 100%;
+  margin: 0;
+}
+
+html {
+  font-family:
+    Inter,
+    ui-sans-serif,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
+}
+
+body {
+  min-height: 100vh;
+  overflow: hidden;
+  color: #30272b;
+  background: #f8f1ed;
+}
+
+button,
+a {
+  font: inherit;
+  -webkit-tap-highlight-color: transparent;
+}
+
+button {
+  color: inherit;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+
+/* ==========================================================
+   SHARED HEADER
+   ========================================================== */
+
+.site-header {
+  position: fixed;
+  top: 14px;
+  left: 50%;
+  z-index: 100;
+
+  width: min(980px, calc(100vw - 48px));
+  min-height: 54px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  padding: 0 22px;
+
+  border: 1px solid rgba(255,255,255,.85);
+  border-radius: 999px;
+
+  background: rgba(255,250,250,.74);
+
+  box-shadow:
+    0 12px 40px rgba(103,62,79,.08),
+    inset 0 1px 0 rgba(255,255,255,.85);
+
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+
+  transform: translateX(-50%);
+
+  transition:
+    background 420ms ease,
+    border-color 420ms ease,
+    box-shadow 420ms ease;
+}
+
+.site-brand {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+
+  color: #d75d91;
+
+  font-size: 13px;
+  font-weight: 850;
+  letter-spacing: .18em;
+
+  transition: color 420ms ease;
+}
+
+.site-brand::before {
+  content: "♡";
+  color: #efa45e;
+  font-size: 17px;
+  letter-spacing: 0;
+}
+
+.site-nav {
+  display: flex;
+  align-items: center;
+  gap: 36px;
+}
+
+.nav-link {
+  border: 0;
+  padding: 8px 0;
+  background: transparent;
+
+  color: #604c55;
+
+  font-size: 11px;
+  font-weight: 850;
+  letter-spacing: .16em;
+
+  cursor: pointer;
+
+  transition:
+    color 180ms ease,
+    transform 180ms ease;
+}
+
+.nav-link:hover,
+.nav-link:focus-visible {
+  color: #df6c9e;
+  transform: translateY(-1px);
+}
+
+.nav-button {
+  appearance: none;
+}
+
+
+/* ==========================================================
+   WORLD STAGE
+   ========================================================== */
+
+.world-stage {
+  position: relative;
+
+  width: 100vw;
+  height: 100vh;
+
+  overflow: hidden;
+
+  background: #f8f1ed;
+
+  transition: background 480ms ease;
+}
+
+body.braincell-active .world-stage {
+  background: #1a0d2b;
+}
+
+.world {
+  position: absolute;
+  inset: 0;
+
+  opacity: 0;
+  visibility: hidden;
+
+  pointer-events: none;
+
+  transform: translateX(0);
+
+  will-change:
+    transform,
+    opacity;
+}
+
+.world.is-active {
+  opacity: 1;
+  visibility: visible;
+
+  pointer-events: auto;
+
+  transform: translateX(0);
+}
+
+
+/* ==========================================================
+   WORLD TRANSITIONS
+   ========================================================== */
+
+.world.world-enter-right {
+  visibility: visible;
+  opacity: 0;
+
+  transform: translateX(64px);
+
+  transition:
+    transform 520ms cubic-bezier(.22,1,.36,1),
+    opacity 430ms ease;
+}
+
+.world.world-enter-left {
+  visibility: visible;
+  opacity: 0;
+
+  transform: translateX(-64px);
+
+  transition:
+    transform 520ms cubic-bezier(.22,1,.36,1),
+    opacity 430ms ease;
+}
+
+.world.world-enter-active {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.world.world-exit-left {
+  visibility: visible;
+  pointer-events: none;
+
+  opacity: 0;
+
+  transform: translateX(-46px);
+
+  transition:
+    transform 440ms cubic-bezier(.22,1,.36,1),
+    opacity 330ms ease;
+}
+
+.world.world-exit-right {
+  visibility: visible;
+  pointer-events: none;
+
+  opacity: 0;
+
+  transform: translateX(46px);
+
+  transition:
+    transform 440ms cubic-bezier(.22,1,.36,1),
+    opacity 330ms ease;
+}
+
+
+/* ==========================================================
+   WORLD INNER
+   ========================================================== */
+
+.world-inner {
+  position: relative;
+  z-index: 2;
+
+  width: min(1380px, calc(100vw - 154px));
+  height: 100%;
+
+  margin: 0 auto;
+
+  padding-top: 84px;
+}
+
+
+/* ==========================================================
+   WORLD ARROWS
+   ========================================================== */
+
+.world-navigation {
+  position: fixed;
+  top: 239px;
+  left: 0;
+
+  z-index: 90;
+
+  width: 100%;
+  height: 0;
+
+  pointer-events: none;
+}
+
+.world-arrow {
+  position: absolute;
+  top: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 40px;
+  height: 40px;
+
+  padding: 0;
+
+  border: 1px solid rgba(222,108,157,.24);
+  border-radius: 14px;
+
+  background: rgba(255,250,250,.72);
+  color: #d96397;
+
+  box-shadow:
+    0 8px 22px rgba(119,73,92,.07),
+    inset 0 1px 0 rgba(255,255,255,.9);
+
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+
+  font-size: 23px;
+  font-weight: 650;
+  line-height: 1;
+
+  cursor: pointer;
+  pointer-events: auto;
+
+  transform: translateY(-50%);
+
+  transition:
+    color 180ms ease,
+    background 180ms ease,
+    border-color 180ms ease,
+    box-shadow 180ms ease,
+    transform 180ms ease;
+}
+
+.world-arrow--left {
+  left: 18px;
+}
+
+.world-arrow--right {
+  right: 18px;
+}
+
+.world-arrow:hover,
+.world-arrow:focus-visible {
+  color: #c94f85;
+
+  border-color: rgba(222,108,157,.42);
+
+  background: rgba(255,255,255,.9);
+
+  box-shadow:
+    0 10px 25px rgba(119,73,92,.11),
+    inset 0 1px 0 rgba(255,255,255,1);
+
+  transform:
+    translateY(-50%)
+    scale(1.06);
+}
+
+
+/* ==========================================================
+   SHARED TYPOGRAPHY
+   ========================================================== */
+
+.eyebrow {
+  margin: 0 0 5px;
+
+  color: #d65f91;
+
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: .18em;
+}
+
+.section-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+
+  margin-bottom: 8px;
+}
+
+.section-heading h2 {
+  margin: 0;
+
+  font-size: 20px;
+  line-height: 1.05;
+  letter-spacing: -.04em;
+}
+
+.section-heading--compact {
+  margin-bottom: 3px;
+}
+
+.tiny-note {
+  color: #a77d8e;
+  font-size: 9px;
+  font-weight: 750;
+}
+
+
+/* ==========================================================
+   SHARED PANEL
+   ========================================================== */
+
+.panel {
+  border: 1px solid rgba(255,255,255,.78);
+  border-radius: 25px;
+
+  background: rgba(255,250,250,.62);
+
+  box-shadow:
+    0 18px 45px rgba(103,62,79,.06),
+    inset 0 1px 0 rgba(255,255,255,.88);
+
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+
+
+/* ==========================================================
+   BUTTON
+   ========================================================== */
+
+.primary-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  min-height: 38px;
+
+  padding: 0 22px;
+
+  border: 0;
+  border-radius: 999px;
+
+  background: #e96ea7;
+  color: #fff;
+
+  box-shadow:
+    0 10px 24px rgba(222,90,147,.18);
+
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: .1em;
+
+  cursor: pointer;
+
+  transition:
+    transform 180ms ease,
+    box-shadow 180ms ease,
+    background 180ms ease;
+}
+
+.primary-button:hover,
+.primary-button:focus-visible {
+  background: #dd5d97;
+
+  transform: translateY(-2px);
+
+  box-shadow:
+    0 14px 28px rgba(222,90,147,.24);
+}
+
+
+/* ==========================================================
+   PLACEHOLDERS
+   ========================================================== */
+
+.placeholder-art {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  gap: 8px;
+
+  border: 1px dashed rgba(220,119,161,.32);
+
+  color: #aa8292;
+
+  text-align: center;
+
+  font-size: 11px;
+  font-weight: 850;
+  letter-spacing: .09em;
+}
+
+.placeholder-art small {
+  opacity: .58;
+
+  font-size: 8px;
+  letter-spacing: .05em;
+}
+
+
+/* ==========================================================
+   MEICAT
+   ========================================================== */
+
+.world--meicat {
+  background:
+    radial-gradient(
+      circle at 17% 20%,
+      rgba(248,177,202,.34),
+      transparent 30%
+    ),
+
+    radial-gradient(
+      circle at 87% 16%,
+      rgba(169,205,239,.22),
+      transparent 30%
+    ),
+
+    radial-gradient(
+      circle at 73% 85%,
+      rgba(245,199,217,.28),
+      transparent 32%
+    ),
+
+    linear-gradient(
+      135deg,
+      #f9efed 0%,
+      #fff9f7 48%,
+      #f8eff5 100%
+    );
+}
+
+.meicat-layout {
+  display: grid;
+
+  grid-template-rows:
+    310px
+    380px;
+
+  gap: 14px;
+}
+
+
+/* ==========================================================
+   MEICAT HERO
+   ========================================================== */
+
+.meicat-hero {
+  position: relative;
+
+  display: grid;
+
+  grid-template-columns:
+    43%
+    57%;
+
+  min-height: 0;
+
+  overflow: visible;
+
+  border: 1px solid rgba(255,255,255,.82);
+  border-radius: 32px;
+
+  background:
+    linear-gradient(
+      115deg,
+      rgba(255,251,249,.86),
+      rgba(255,247,250,.68)
+    );
+
+  box-shadow:
+    0 24px 70px rgba(104,67,83,.08),
+    inset 0 1px 0 rgba(255,255,255,.92);
+
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+}
+
+.meicat-hero__copy {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+
+  padding: 30px 32px;
+}
+
+.meicat-hero__copy h1 {
+  margin: 1px 0 10px;
+
+  color: #30272b;
+
+  font-family:
+    Inter,
+    ui-rounded,
+    "SF Pro Rounded",
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
+
+  font-size: clamp(60px,5vw,76px);
+  font-weight: 850;
+  line-height: .9;
+  letter-spacing: -.02em;
+}
+
+.meicat-creator-fields {
+  margin: 0 0 17px;
+
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 1.35;
+  letter-spacing: -.02em;
+}
+
+.meicat-hero__description {
+  margin: 0 0 18px;
+
+  color: #806b74;
+
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.meicat-follow {
+  min-width: 176px;
+}
+
+.meicat-hero__art {
+  position: relative;
+
+  align-self: stretch;
+
+  margin:
+    -16px
+    18px
+    -12px
+    0;
+
+  border-radius: 30px;
+
+  background:
+    radial-gradient(
+      circle at 50% 58%,
+      rgba(244,169,199,.22),
+      transparent 42%
+    ),
+    rgba(255,242,247,.34);
+}
+
+
+/* ==========================================================
+   MEICAT LOWER GRID
+   ========================================================== */
+
+.meicat-content {
+  display: grid;
+
+  grid-template-columns:
+    minmax(0,1.28fr)
+    minmax(250px,.68fr)
+    minmax(0,1.08fr);
+
+  gap: 12px;
+
+  min-height: 0;
+}
+
+.meicat-content__left {
+  display: grid;
+
+  grid-template-rows:
+    316px
+    54px;
+
+  gap: 10px;
+
+  min-height: 0;
+}
+
+
+/* ==========================================================
+   GIFTERS
+   ========================================================== */
+
+.weekly-gifters {
+  min-height: 0;
+
+  padding:
+    14px
+    14px
+    15px;
+}
+
+.gifter-grid {
+  display: grid;
+
+  grid-template-columns:
+    repeat(3,minmax(0,1fr));
+
+  gap: 10px;
+
+  height: calc(100% - 41px);
+}
+
+.gifter-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  min-width: 0;
+
+  padding: 10px 8px;
+
+  border: 1px solid rgba(233,160,190,.34);
+  border-radius: 18px;
+
+  background: rgba(255,251,251,.45);
+
+  transition:
+    transform 180ms ease,
+    background 180ms ease,
+    box-shadow 180ms ease;
+}
+
+.gifter-card:hover,
+.gifter-card:focus-visible {
+  z-index: 2;
+
+  background: rgba(255,255,255,.7);
+
+  transform:
+    translateY(-3px)
+    scale(1.025);
+
+  box-shadow:
+    0 13px 28px rgba(120,72,93,.08);
+}
+
+.gifter-avatar {
+  width: 90px;
+  height: 90px;
+
+  margin-bottom: 12px;
+
+  border-radius: 50%;
+}
+
+.gifter-card strong {
+  max-width: 100%;
+
+  overflow: hidden;
+
+  color: #514047;
+
+  font-size: 10px;
+
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.gifter-card small {
+  margin-top: 4px;
+
+  color: #d66b99;
+
+  font-size: 9px;
+  font-weight: 750;
+}
+
+
+/* ==========================================================
+   SOCIALS
+   ========================================================== */
+
+.social-row {
+  display: grid;
+
+  grid-template-columns:
+    repeat(5,1fr);
+
+  align-items: center;
+
+  height: 54px;
+
+  padding: 0 10px;
+
+  border: 1px solid rgba(255,255,255,.76);
+  border-radius: 22px;
+
+  background: rgba(255,250,250,.64);
+
+  box-shadow:
+    0 14px 35px rgba(103,62,79,.05);
+
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
+}
+
+.social-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  min-width: 0;
+  min-height: 32px;
+
+  margin: 0 4px;
+  padding: 0 6px;
+
+  border: 1px solid transparent;
+  border-radius: 999px;
+
+  color: #785966;
+
+  font-size: 8px;
+  font-weight: 850;
+
+  transition:
+    color 180ms ease,
+    background 180ms ease,
+    border-color 180ms ease,
+    box-shadow 180ms ease,
+    transform 180ms ease;
+}
+
+.social-link:hover,
+.social-link:focus-visible {
+  color: #d75e92;
+
+  border-color: rgba(236,167,196,.28);
+
+  background: rgba(255,255,255,.74);
+
+  box-shadow:
+    0 7px 18px rgba(120,72,93,.07);
+
+  transform: translateY(-2px);
+}
+
+
+/* ==========================================================
+   MEIART
+   ========================================================== */
+
+.meiart-section {
+  position: relative;
+
+  min-width: 0;
+  height: 380px;
+
+  overflow: visible;
+
+  padding:
+    14px
+    14px
+    10px;
+
+  border: 1px solid rgba(255,255,255,.76);
+  border-radius: 25px;
+
+  background: rgba(255,250,250,.56);
+
+  box-shadow:
+    0 18px 45px rgba(103,62,79,.06);
+
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+
+.polaroid-stack {
+  position: relative;
+
+  width: 100%;
+  height: 324px;
+
+  isolation: isolate;
+}
+
+.polaroid {
+  position: absolute;
+
+  width: 64%;
+
+  padding:
+    9px
+    9px
+    14px;
+
+  border-radius: 5px;
+
+  background: #fffaf8;
+
+  box-shadow:
+    0 16px 30px rgba(96,58,75,.12);
+
+  cursor: default;
+
+  transform-origin: center;
+
+  outline: none;
+
+  transition:
+    transform 280ms cubic-bezier(.2,.8,.2,1),
+    box-shadow 280ms ease;
+}
+
+.polaroid--one {
+  top: 12px;
+  left: 7%;
+
+  z-index: 1;
+
+  transform: rotate(-5deg);
+}
+
+.polaroid--two {
+  right: 5%;
+  bottom: 14px;
+
+  z-index: 2;
+
+  transform: rotate(4deg);
+}
+
+.polaroid:hover,
+.polaroid:focus-visible {
+  z-index: 20;
+
+  box-shadow:
+    0 24px 42px rgba(96,58,75,.18);
+}
+
+.polaroid--one:hover,
+.polaroid--one:focus-visible {
+  transform:
+    translate(8px,5px)
+    rotate(-1deg)
+    scale(1.025);
+}
+
+.polaroid--two:hover,
+.polaroid--two:focus-visible {
+  transform:
+    translate(-5px,-5px)
+    rotate(1deg)
+    scale(1.025);
+}
+
+.polaroid__image {
+  width: 100%;
+
+  aspect-ratio: 1 / 1;
+
+  background:
+    linear-gradient(
+      145deg,
+      rgba(255,247,249,.92),
+      rgba(255,238,245,.8)
+    );
+}
+
+.polaroid p {
+  margin: 8px 0 0;
+
+  color: #b1738e;
+
+  font-size: 9px;
+  font-weight: 850;
+
+  text-align: center;
+}
+
+
+/* ==========================================================
+   TUTORIALS
+   ========================================================== */
+
+.tutorials-section {
+  min-width: 0;
+  height: 380px;
+
+  padding: 14px;
+}
+
+.tutorial-list {
+  display: grid;
+
+  grid-template-rows:
+    repeat(3,minmax(0,1fr));
+
+  gap: 8px;
+
+  height: calc(100% - 41px);
+}
+
+.tutorial-card {
+  display: grid;
+
+  grid-template-columns:
+    30%
+    minmax(0,1fr);
+
+  align-items: center;
+
+  min-width: 0;
+
+  overflow: hidden;
+
+  border: 1px solid rgba(233,160,190,.32);
+  border-radius: 18px;
+
+  background: rgba(255,251,251,.44);
+
+  transition:
+    transform 180ms ease,
+    background 180ms ease,
+    box-shadow 180ms ease;
+}
+
+.tutorial-card:hover,
+.tutorial-card:focus-visible {
+  z-index: 2;
+
+  background: rgba(255,255,255,.7);
+
+  transform: scale(1.018);
+
+  box-shadow:
+    0 13px 28px rgba(120,72,93,.07);
+}
+
+.tutorial-thumb {
+  align-self: stretch;
+
+  min-height: 0;
+
+  border-top: 0;
+  border-bottom: 0;
+  border-left: 0;
+
+  border-radius: 15px;
+}
+
+.tutorial-card > div:last-child {
+  min-width: 0;
+
+  padding: 10px 13px;
+}
+
+.tutorial-card strong {
+  display: block;
+
+  margin-bottom: 4px;
+
+  color: #4d3b43;
+
+  font-size: 11px;
+}
+
+.tutorial-card p {
+  margin: 0;
+
+  color: #967683;
+
+  font-size: 8px;
+  line-height: 1.45;
+}
+/* ==========================================================
+   BRAINCELL WORLD
+   ========================================================== */
+
+.world--braincell {
+  isolation: isolate;
+
+  color: #f8f5ff;
+
+  background:
+    radial-gradient(
+      ellipse at 12% 88%,
+      rgba(89,42,139,.09),
+      transparent 38%
+    ),
+
+    radial-gradient(
+      ellipse at 92% 8%,
+      rgba(70,42,123,.07),
+      transparent 35%
+    ),
+
+    linear-gradient(
+      135deg,
+      #11071c 0%,
+      #180924 35%,
+      #1b0b2a 66%,
+      #12071d 100%
+    );
+}
+
+
+/* ==========================================================
+   BRAINCELL ATMOSPHERE
+   ========================================================== */
+
+.braincell-atmosphere {
+  position: absolute;
+  inset: 0;
+
+  /* Keep the moving environmental lights above the world's opaque
+     background, but below the actual Braincell UI (.world-inner is z-index: 2). */
+  z-index: 1;
+
+  overflow: hidden;
+
+  pointer-events: none;
+}
+
+
+/* very subtle grid texture */
+
+.braincell-atmosphere::before {
+  content: "";
+
+  position: absolute;
+  inset: 0;
+
+  z-index: 3;
+
+  opacity: .11;
+
+  background-image:
+    linear-gradient(
+      rgba(231,205,255,.025) 1px,
+      transparent 1px
+    ),
+
+    linear-gradient(
+      90deg,
+      rgba(231,205,255,.025) 1px,
+      transparent 1px
+    );
+
+  background-size:
+    48px
+    48px;
+
+  mask-image:
+    radial-gradient(
+      ellipse at center,
+      #000 0%,
+      rgba(0,0,0,.7) 50%,
+      transparent 91%
+    );
+
+  -webkit-mask-image:
+    radial-gradient(
+      ellipse at center,
+      #000 0%,
+      rgba(0,0,0,.7) 50%,
+      transparent 91%
+    );
+}
+
+
+/* ==========================================================
+   TWO REAL LIGHT SOURCES
+
+   Each .braincell-aura is now the OUTER HALO.
+   ::before = brighter inner body
+   ::after  = compact luminous core
+
+   This gives each light a visible location instead of
+   turning the entire page into one giant blurred gradient.
+   ========================================================== */
+
+.braincell-aura {
+  position: absolute;
+
+  border-radius: 50%;
+
+  pointer-events: none;
+
+  will-change:
+    transform,
+    opacity;
+
+  transform-origin: center;
+
+  mix-blend-mode: normal;
+}
+
+.braincell-aura::before,
+.braincell-aura::after {
+  content: "";
+
+  position: absolute;
+
+  border-radius: 50%;
+
+  pointer-events: none;
+}
+
+
+/* ==========================================================
+   LIGHT 01 — ORANGE
+
+   Visible immediately in upper-right.
+   ========================================================== */
+
+.braincell-aura--one {
+  z-index: 1;
+
+  width: 500px;
+  height: 430px;
+
+  left: 66%;
+  top: -85px;
+
+  background:
+    radial-gradient(
+      ellipse at center,
+      rgba(242,145,73,.30) 0%,
+      rgba(225,104,63,.18) 31%,
+      rgba(205,84,75,.075) 53%,
+      transparent 72%
+    );
+
+  filter: blur(28px);
+
+  opacity: .88;
+
+  animation:
+    braincellOrangeTravel
+    28s
+    cubic-bezier(.45,.04,.55,.96)
+    infinite;
+}
+
+
+/* orange inner body */
+
+.braincell-aura--one::before {
+  width: 64%;
+  height: 64%;
+
+  left: 18%;
+  top: 18%;
+
+  background:
+    radial-gradient(
+      ellipse at center,
+      rgba(255,199,126,.48) 0%,
+      rgba(255,166,83,.34) 20%,
+      rgba(247,132,67,.19) 45%,
+      rgba(225,102,70,.065) 68%,
+      transparent 82%
+    );
+
+  filter: blur(18px);
+}
+
+
+/* orange luminous core */
+
+.braincell-aura--one::after {
+  width: 32%;
+  height: 32%;
+
+  left: 34%;
+  top: 34%;
+
+  background:
+    radial-gradient(
+      ellipse at center,
+      rgba(255,218,164,.46) 0%,
+      rgba(255,176,96,.34) 28%,
+      rgba(246,134,68,.14) 65%,
+      transparent 84%
+    );
+
+  filter: blur(12px);
+}
+
+
+/* ==========================================================
+   LIGHT 02 — PINK / MAGENTA
+
+   Visible immediately in lower-left.
+   Smaller and distinctly pink.
+   ========================================================== */
+
+.braincell-aura--two {
+  z-index: 2;
+
+  width: 420px;
+  height: 370px;
+
+  left: -60px;
+  top: 55%;
+
+  background:
+    radial-gradient(
+      ellipse at center,
+      rgba(218,81,166,.25) 0%,
+      rgba(188,65,168,.15) 31%,
+      rgba(147,57,163,.065) 54%,
+      transparent 73%
+    );
+
+  filter: blur(27px);
+
+  opacity: .82;
+
+  animation:
+    braincellPinkTravel
+    37s
+    cubic-bezier(.42,.06,.58,.94)
+    infinite;
+}
+
+
+/* pink inner body */
+
+.braincell-aura--two::before {
+  width: 64%;
+  height: 64%;
+
+  left: 18%;
+  top: 18%;
+
+  background:
+    radial-gradient(
+      ellipse at center,
+      rgba(255,165,205,.40) 0%,
+      rgba(243,113,184,.30) 22%,
+      rgba(215,81,177,.17) 46%,
+      rgba(177,67,174,.06) 68%,
+      transparent 82%
+    );
+
+  filter: blur(17px);
+}
+
+
+/* pink luminous core */
+
+.braincell-aura--two::after {
+  width: 31%;
+  height: 31%;
+
+  left: 34.5%;
+  top: 34.5%;
+
+  background:
+    radial-gradient(
+      ellipse at center,
+      rgba(255,205,226,.40) 0%,
+      rgba(249,143,196,.30) 29%,
+      rgba(222,90,179,.13) 64%,
+      transparent 84%
+    );
+
+  filter: blur(11px);
+}
+
+
+/* ==========================================================
+   ORANGE ROUTE
+
+   Upper-right
+   → upper-center
+   → center-left
+   → lower-left
+   → lower-right
+   → upper-right
+
+   It does NOT follow the pink light.
+   ========================================================== */
+
+@keyframes braincellOrangeTravel {
+
+  0% {
+    opacity: .94;
+
+    transform:
+      translate3d(0,0,0)
+      scale(1);
+  }
+
+  16% {
+    opacity: 1;
+
+    transform:
+      translate3d(-250px,85px,0)
+      scale(1.04);
+  }
+
+  34% {
+    opacity: .92;
+
+    transform:
+      translate3d(-570px,230px,0)
+      scale(.96);
+  }
+
+  51% {
+    opacity: .98;
+
+    transform:
+      translate3d(-760px,500px,0)
+      scale(1.05);
+  }
+
+  68% {
+    opacity: .91;
+
+    transform:
+      translate3d(-250px,570px,0)
+      scale(1);
+  }
+
+  84% {
+    opacity: .97;
+
+    transform:
+      translate3d(130px,335px,0)
+      scale(1.04);
+  }
+
+  100% {
+    opacity: .94;
+
+    transform:
+      translate3d(0,0,0)
+      scale(1);
+  }
+}
+
+
+/* ==========================================================
+   PINK ROUTE
+
+   Lower-left
+   → left-middle
+   → upper-middle
+   → right-middle
+   → lower-middle
+   → lower-left
+
+   Different duration and different geometry.
+   ========================================================== */
+
+@keyframes braincellPinkTravel {
+
+  0% {
+    opacity: .9;
+
+    transform:
+      translate3d(0,0,0)
+      scale(1);
+  }
+
+  15% {
+    opacity: .96;
+
+    transform:
+      translate3d(120px,-210px,0)
+      scale(1.04);
+  }
+
+  32% {
+    opacity: .89;
+
+    transform:
+      translate3d(430px,-440px,0)
+      scale(.96);
+  }
+
+  49% {
+    opacity: .97;
+
+    transform:
+      translate3d(790px,-315px,0)
+      scale(1.05);
+  }
+
+  66% {
+    opacity: .9;
+
+    transform:
+      translate3d(900px,10px,0)
+      scale(.98);
+  }
+
+  82% {
+    opacity: .96;
+
+    transform:
+      translate3d(490px,145px,0)
+      scale(1.04);
+  }
+
+  92% {
+    opacity: .91;
+
+    transform:
+      translate3d(170px,90px,0)
+      scale(.99);
+  }
+
+  100% {
+    opacity: .9;
+
+    transform:
+      translate3d(0,0,0)
+      scale(1);
+  }
+}
+
+
+/* ==========================================================
+   BRAINCELL LAYOUT
+   ========================================================== */
+
+.braincell-layout {
+  position: relative;
+  z-index: 2;
+
+  display: grid;
+
+  grid-template-rows:
+    310px
+    380px;
+
+  gap: 14px;
+}
+
+
+/* ==========================================================
+   LIQUID GLASS
+
+   Neutral on purpose.
+   The two moving lights underneath provide the color.
+   ========================================================== */
+
+.braincell-glass {
+  position: relative;
+
+  border:
+    1px solid rgba(242,220,255,.145);
+
+  background:
+    linear-gradient(
+      145deg,
+      rgba(255,255,255,.10) 0%,
+      rgba(255,255,255,.047) 34%,
+      rgba(221,195,235,.025) 68%,
+      rgba(255,255,255,.015) 100%
+    );
+
+  box-shadow:
+    0 25px 65px rgba(3,0,12,.30),
+    0 4px 18px rgba(11,2,28,.16),
+    inset 0 1px 0 rgba(255,255,255,.19),
+    inset 0 -1px 0 rgba(180,139,204,.04);
+
+  backdrop-filter:
+    blur(15px)
+    saturate(130%);
+
+  -webkit-backdrop-filter:
+    blur(15px)
+    saturate(130%);
+}
+
+.braincell-glass::after {
+  content: "";
+
+  position: absolute;
+
+  top: 0;
+  left: 5%;
+  right: 5%;
+
+  height: 1px;
+
+  border-radius: 999px;
+
+  background:
+    linear-gradient(
+      90deg,
+      transparent,
+      rgba(255,255,255,.27) 26%,
+      rgba(241,220,252,.18) 53%,
+      rgba(255,255,255,.11) 76%,
+      transparent
+    );
+
+  opacity: .78;
+
+  pointer-events: none;
+}
+
+
+/* ==========================================================
+   BRAINCELL HEADINGS
+   ========================================================== */
+
+.eyebrow--braincell {
+  color: rgba(236,220,247,.67);
+}
+
+.section-heading--braincell {
+  position: relative;
+}
+
+.section-heading--braincell h2 {
+  color: #fbf8ff;
+
+  text-shadow:
+    0 3px 20px rgba(185,126,221,.08);
+}
+
+.section-heading--braincell .eyebrow {
+  color: rgba(224,196,240,.54);
+}
+
+
+/* ==========================================================
+   BRAINCELL HERO
+   ========================================================== */
+
+.braincell-hero {
+  position: relative;
+
+  display: grid;
+
+  grid-template-columns:
+    44%
+    56%;
+
+  min-height: 0;
+
+  overflow: hidden;
+
+  border-radius: 32px;
+
+  background:
+    linear-gradient(
+      118deg,
+      rgba(255,255,255,.10),
+      rgba(255,255,255,.043) 43%,
+      rgba(205,180,220,.025) 70%,
+      rgba(255,255,255,.015)
+    );
+
+  box-shadow:
+    0 30px 80px rgba(4,0,15,.34),
+    inset 0 1px 0 rgba(255,255,255,.20),
+    inset 0 -1px 0 rgba(162,92,199,.04);
+}
+
+
+/* No local orange/pink hero lamp */
+
+.braincell-hero::before {
+  content: none;
+}
+
+
+/* top glass rim */
+
+.braincell-hero::after {
+  content: "";
+
+  position: absolute;
+
+  top: 0;
+  left: 4%;
+  right: 4%;
+
+  height: 1px;
+
+  background:
+    linear-gradient(
+      90deg,
+      transparent,
+      rgba(255,255,255,.32) 25%,
+      rgba(235,210,248,.18) 63%,
+      transparent
+    );
+
+  pointer-events: none;
+}
+
+.braincell-hero__copy {
+  position: relative;
+  z-index: 4;
+
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+
+  padding: 30px 34px;
+}
+
+.braincell-hero__copy .eyebrow {
+  margin-bottom: 8px;
+
+  color: rgba(238,220,248,.69);
+}
+
+.braincell-hero__copy h1 {
+  margin: 0 0 12px;
+
+  color: #f2a45e;
+
+  font-size: clamp(52px,4.5vw,70px);
+  font-weight: 900;
+  line-height: .92;
+  letter-spacing: .035em;
+
+  text-shadow:
+    0 0 22px rgba(239,164,94,.10);
+}
+
+.braincell-hero__description {
+  max-width: 430px;
+
+  margin: 0 0 20px;
+
+  color: rgba(248,245,255,.72);
+
+  font-size: 13px;
+  line-height: 1.55;
+}
+
+
+/* ==========================================================
+   HERO ART
+   ========================================================== */
+
+.braincell-hero__art {
+  position: relative;
+  z-index: 2;
+
+  isolation: isolate;
+
+  margin: 16px;
+
+  overflow: hidden;
+
+  border-color:
+    rgba(228,184,247,.16);
+
+  border-radius: 24px;
+
+  background:
+    rgba(25,11,42,.11);
+
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.04);
+}
+
+.braincell-hero__art::before {
+  content: none;
+}
+
+.placeholder-art--dark {
+  border-color:
+    rgba(220,174,238,.18);
+
+  color:
+    rgba(243,220,255,.52);
+}
+
+
+/* ==========================================================
+   DOWNLOADS
+   ========================================================== */
+
+.download-buttons {
+  position: relative;
+  z-index: 5;
+
+  display: flex;
+
+  gap: 10px;
+}
+
+.download-button {
+  position: relative;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+
+  min-width: 148px;
+  min-height: 50px;
+
+  overflow: hidden;
+
+  padding: 8px 16px;
+
+  border:
+    1px solid rgba(255,255,255,.15);
+
+  border-radius: 15px;
+
+  background:
+    linear-gradient(
+      145deg,
+      rgba(255,255,255,.115),
+      rgba(255,255,255,.045)
+    );
+
+  box-shadow:
+    0 8px 24px rgba(4,0,13,.12),
+    inset 0 1px 0 rgba(255,255,255,.14);
+
+  transition:
+    transform 210ms cubic-bezier(.22,1,.36,1),
+    background 210ms ease,
+    border-color 210ms ease,
+    box-shadow 210ms ease;
+}
+
+.download-button::before {
+  content: none;
+}
+
+.download-button:hover,
+.download-button:focus-visible {
+  border-color: rgba(255,190,126,.72);
+
+  background:
+    linear-gradient(
+      145deg,
+      #f5ad68,
+      #ed9551
+    );
+
+  box-shadow:
+    0 14px 32px rgba(4,0,13,.20),
+    inset 0 1px 0 rgba(255,255,255,.20);
+
+  transform: translateY(-3px);
+}
+
+.download-button:hover span,
+.download-button:focus-visible span {
+  color: rgba(49,25,15,.68);
+}
+
+.download-button:hover strong,
+.download-button:focus-visible strong {
+  color: #26150f;
+}
+
+.download-button span,
+.download-button strong {
+  position: relative;
+  z-index: 2;
+}
+
+.download-button span {
+  color:
+    rgba(248,245,255,.55);
+
+  font-size: 8px;
+  font-weight: 650;
+}
+
+.download-button strong {
+  margin-top: 2px;
+
+  color: #fff;
+
+  font-size: 10px;
+  font-weight: 850;
+  letter-spacing: .08em;
+}
+
+
+/* ==========================================================
+   BRAINCELL LOWER LAYOUT
+   ========================================================== */
+
+.braincell-content {
+  position: relative;
+
+  display: grid;
+
+  grid-template-columns:
+    minmax(0,.82fr)
+    minmax(190px,.52fr)
+    minmax(0,1.5fr);
+
+  gap: 14px;
+
+  min-height: 0;
+}
+
+.braincell-content::before {
+  content: none;
+}
+
+.braincell-features,
+.setup-showcase,
+.braincell-shorts {
+  min-width: 0;
+  height: 380px;
+
+  padding: 14px 0 0;
+}
+
+
+/* ==========================================================
+   QUICK LINKS
+   ========================================================== */
+
+.feature-grid {
+  display: grid;
+
+  grid-template-columns:
+    repeat(2,minmax(0,1fr));
+
+  grid-template-rows:
+    repeat(2,minmax(0,1fr));
+
+  gap: 10px;
+
+  height: calc(100% - 42px);
+
+  align-content: center;
+}
+
+.feature-card {
+  position: relative;
+
+  display: block;
+
+  width: 100%;
+  max-height: 100%;
+
+  aspect-ratio: 1 / 1;
+
+  align-self: center;
+  justify-self: center;
+
+  overflow: hidden;
+
+  border:
+    1px solid rgba(238,216,250,.025);
+
+  border-radius: 20px;
+
+  background:
+    rgba(255,255,255,.004);
+
+  box-shadow: none;
+
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+
+  transition:
+    transform 260ms cubic-bezier(.22,1,.36,1),
+    border-color 220ms ease,
+    background 220ms ease;
+}
+
+.feature-card::before {
+  content: none;
+}
+
+/* Current HTML still contains six placeholders.
+   Keep only the planned four visible until the final HTML asset pass. */
+.feature-card:nth-child(n+5) {
+  display: none;
+}
+
+.feature-card:hover,
+.feature-card:focus-visible {
+  z-index: 5;
+
+  border-color: transparent;
+
+  background: transparent;
+
+  transform:
+    translateY(-3px)
+    scale(1.025);
+}
+
+.feature-art {
+  position: relative;
+  z-index: 2;
+
+  width: 100%;
+  height: 100%;
+
+  border: 0;
+
+  background: transparent;
+}
+
+
+@media (min-width:901px) {
+  .feature-card {
+    width: auto;
+    height: 100%;
+    max-width: 100%;
+  }
+}
+
+
+/* ==========================================================
+   SETUP
+   ========================================================== */
+
+.setup-frame {
+  position: relative;
+
+  width: 100%;
+  height: calc(100% - 42px);
+
+  overflow: hidden;
+
+  border-radius: 22px;
+
+  background:
+    linear-gradient(
+      150deg,
+      rgba(255,255,255,.09),
+      rgba(255,255,255,.022)
+    );
+}
+
+.setup-frame::before {
+  content: none;
+}
+
+.setup-placeholder {
+  position: relative;
+  z-index: 2;
+
+  width: 100%;
+  height: 100%;
+
+  border: 0;
+
+  background: transparent;
+}
+
+.setup-placeholder > span {
+  color:
+    rgba(248,245,255,.76);
+
+  font-size: 20px;
+
+  letter-spacing: .02em;
+}
+
+.setup-dots {
+  position: absolute;
+
+  z-index: 4;
+
+  left: 50%;
+  bottom: 12px;
+
+  display: flex;
+
+  gap: 5px;
+
+  transform: translateX(-50%);
+}
+
+.setup-dots span {
+  width: 5px;
+  height: 5px;
+
+  border-radius: 50%;
+
+  background:
+    rgba(255,255,255,.22);
+}
+
+.setup-dots span.is-active {
+  background: #efa45e;
+
+  box-shadow:
+    0 0 9px rgba(239,164,94,.34);
+}
+
+
+/* ==========================================================
+   BRAINCELL IN ACTION
+   ========================================================== */
+
+.shorts-grid {
+  display: grid;
+
+  grid-template-columns:
+    repeat(3,minmax(0,1fr));
+
+  align-items: start;
+  justify-content: center;
+
+  gap: 10px;
+
+  height: calc(100% - 42px);
+}
+
+.short-card {
+  position: relative;
+
+  display: block;
+
+  width: 100%;
+  height: 100%;
+
+  min-width: 0;
+  min-height: 0;
+
+  overflow: hidden;
+
+  border-radius: 20px;
+
+  background:
+    linear-gradient(
+      145deg,
+      rgba(255,255,255,.085),
+      rgba(255,255,255,.022)
+    );
+
+  transition:
+    transform 260ms cubic-bezier(.22,1,.36,1),
+    background 220ms ease,
+    border-color 220ms ease,
+    box-shadow 260ms ease;
+}
+
+.short-card::before {
+  content: none;
+}
+
+.short-card:hover,
+.short-card:focus-visible {
+  z-index: 5;
+
+  border-color:
+    rgba(241,220,251,.20);
+
+  background:
+    linear-gradient(
+      145deg,
+      rgba(255,255,255,.13),
+      rgba(255,255,255,.04)
+    );
+
+  box-shadow:
+    0 18px 36px rgba(3,0,13,.22),
+    inset 0 1px 0 rgba(255,255,255,.13);
+
+  transform:
+    translateY(-3px)
+    scale(1.018);
+}
+
+.short-thumb {
+  position: relative;
+  z-index: 2;
+
+  width: 100%;
+  height: 100%;
+
+  border: 0;
+
+  background: transparent;
+}
+
+.short-thumb > span {
+  color:
+    rgba(248,245,255,.76);
+
+  font-size: 17px;
+
+  letter-spacing: .02em;
+}
+/* ==========================================================
+   BRAINCELL HEADER
+   ========================================================== */
+
+body.braincell-active .site-header {
+  border-color:
+    rgba(236,211,249,.14);
+
+  background:
+    linear-gradient(
+      115deg,
+      rgba(35,16,52,.77),
+      rgba(28,13,44,.64)
+    );
+
+  box-shadow:
+    0 16px 45px rgba(4,0,12,.28),
+    inset 0 1px 0 rgba(255,255,255,.11);
+
+  backdrop-filter:
+    blur(22px)
+    saturate(120%);
+
+  -webkit-backdrop-filter:
+    blur(22px)
+    saturate(120%);
+}
+
+body.braincell-active .site-brand {
+  color: #f0c9ff;
+}
+
+body.braincell-active .site-brand::before {
+  color: #efa45e;
+}
+
+body.braincell-active .site-nav .nav-link {
+  color:
+    rgba(248,245,255,.72);
+}
+
+body.braincell-active .site-nav .nav-link:hover,
+body.braincell-active .site-nav .nav-link:focus-visible {
+  color: #fff;
+}
+
+
+/* ==========================================================
+   BRAINCELL ARROWS
+   ========================================================== */
+
+body.braincell-active .world-arrow {
+  color:
+    rgba(246,225,255,.92);
+
+  border-color:
+    rgba(242,217,255,.15);
+
+  background:
+    linear-gradient(
+      145deg,
+      rgba(68,37,91,.72),
+      rgba(37,18,57,.72)
+    );
+
+  box-shadow:
+    0 10px 28px rgba(4,0,12,.26),
+    inset 0 1px 0 rgba(255,255,255,.12);
+
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+
+body.braincell-active .world-arrow:hover,
+body.braincell-active .world-arrow:focus-visible {
+  color: #fff;
+
+  border-color:
+    rgba(242,217,255,.28);
+
+  background:
+    linear-gradient(
+      145deg,
+      rgba(83,45,105,.88),
+      rgba(48,23,69,.84)
+    );
+
+  box-shadow:
+    0 13px 32px rgba(4,0,12,.31),
+    inset 0 1px 0 rgba(255,255,255,.16);
+}
+
+
+/* ==========================================================
+   CONTACT MODAL
+   ========================================================== */
+
+.contact-modal {
+  position: fixed;
+  inset: 0;
+
+  z-index: 300;
+
+  display: grid;
+  place-items: center;
+
+  padding: 20px;
+
+  opacity: 0;
+  visibility: hidden;
+
+  pointer-events: none;
+
+  transition:
+    opacity 220ms ease,
+    visibility 220ms ease;
+}
+
+.contact-modal.is-open {
+  opacity: 1;
+  visibility: visible;
+
+  pointer-events: auto;
+}
+
+.contact-modal__backdrop {
+  position: absolute;
+  inset: 0;
+
+  background:
+    rgba(39,25,31,.24);
+
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+.contact-card {
+  position: relative;
+  z-index: 1;
+
+  width: min(410px,100%);
+
+  padding: 34px;
+
+  border:
+    1px solid rgba(255,255,255,.9);
+
+  border-radius: 28px;
+
+  background:
+    rgba(255,249,249,.94);
+
+  box-shadow:
+    0 28px 80px rgba(78,44,59,.18);
+
+  text-align: center;
+}
+
+.contact-card h2 {
+  margin: 5px 0 14px;
+
+  font-size: 27px;
+
+  letter-spacing: -.04em;
+}
+
+.contact-email {
+  margin: 0 0 20px;
+
+  color: #806672;
+
+  font-size: 13px;
+}
+
+.contact-close {
+  position: absolute;
+
+  top: 12px;
+  right: 14px;
+
+  width: 34px;
+  height: 34px;
+
+  border: 0;
+
+  background: transparent;
+
+  color: #9b7887;
+
+  font-size: 25px;
+
+  cursor: pointer;
+}
+
+
+/* ==========================================================
+   BRAINCELL DOWNLOAD MODAL
+   ========================================================== */
+
+.braincell-download-modal {
+  position: fixed;
+  inset: 0;
+
+  z-index: 320;
+
+  display: grid;
+  place-items: center;
+
+  padding: 20px;
+
+  opacity: 0;
+  visibility: hidden;
+
+  pointer-events: none;
+
+  transition:
+    opacity 220ms ease,
+    visibility 220ms ease;
+}
+
+.braincell-download-modal.is-open {
+  opacity: 1;
+  visibility: visible;
+
+  pointer-events: auto;
+}
+
+.braincell-download-modal__backdrop {
+  position: absolute;
+  inset: 0;
+
+  background: rgba(9,3,18,.68);
+
+  backdrop-filter: blur(9px);
+  -webkit-backdrop-filter: blur(9px);
+}
+
+.braincell-download-card {
+  position: relative;
+  z-index: 1;
+
+  width: min(390px, 100%);
+
+  padding: 32px 28px 28px;
+
+  border:
+    1px solid rgba(242,220,255,.18);
+  border-radius: 24px;
+
+  background:
+    linear-gradient(
+      145deg,
+      rgba(55,28,75,.94),
+      rgba(24,10,38,.96)
+    );
+
+  box-shadow:
+    0 28px 80px rgba(3,0,12,.48),
+    inset 0 1px 0 rgba(255,255,255,.14);
+
+  color: #f8f5ff;
+  text-align: center;
+
+  backdrop-filter: blur(18px) saturate(130%);
+  -webkit-backdrop-filter: blur(18px) saturate(130%);
+}
+
+.braincell-download-card h2 {
+  margin: 7px 0 12px;
+
+  color: #fbf8ff;
+
+  font-size: clamp(23px, 6vw, 29px);
+  line-height: 1.05;
+  letter-spacing: -.03em;
+}
+
+.braincell-download-card p:not(.eyebrow) {
+  max-width: 280px;
+
+  margin: 0 auto 24px;
+
+  color: rgba(248,245,255,.68);
+
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.braincell-download-close {
+  position: absolute;
+  top: 10px;
+  right: 12px;
+
+  width: 34px;
+  height: 34px;
+
+  border: 0;
+
+  background: transparent;
+  color: rgba(248,245,255,.72);
+
+  font-size: 25px;
+  line-height: 1;
+
+  cursor: pointer;
+}
+
+.braincell-download-close:hover,
+.braincell-download-close:focus-visible {
+  color: #fff;
+}
+
+.braincell-download-confirm {
+  min-width: 120px;
+  min-height: 44px;
+
+  padding: 10px 18px;
+
+  border: 1px solid rgba(255,190,126,.55);
+  border-radius: 13px;
+
+  background:
+    linear-gradient(
+      145deg,
+      #f5ad68,
+      #ed9551
+    );
+  color: #26150f;
+
+  font-size: 10px;
+  font-weight: 850;
+  letter-spacing: .08em;
+
+  cursor: pointer;
+
+  box-shadow:
+    0 10px 25px rgba(4,0,13,.24),
+    inset 0 1px 0 rgba(255,255,255,.24);
+}
+
+.braincell-download-confirm:hover,
+.braincell-download-confirm:focus-visible {
+  transform: translateY(-2px);
+}
+
+/* ==========================================================
+   COMPACT DESKTOP
+   ========================================================== */
+
+@media (max-height:780px) and (min-width:901px) {
+
+  .site-header {
+    top: 10px;
+    min-height: 48px;
+  }
+
+  .world-inner {
+    padding-top: 66px;
+  }
+
+  .meicat-layout,
+  .braincell-layout {
+    grid-template-rows:
+      280px
+      340px;
+
+    gap: 12px;
+  }
+
+  .world-navigation {
+    top: 206px;
+  }
+
+  .meicat-content__left {
+    grid-template-rows:
+      280px
+      50px;
+
+    gap: 10px;
+  }
+
+  .meiart-section,
+  .tutorials-section,
+  .braincell-features,
+  .setup-showcase,
+  .braincell-shorts {
+    height: 340px;
+  }
+
+  .polaroid-stack {
+    height: 284px;
+  }
+
+  .meicat-hero__copy h1 {
+    font-size: 56px;
+  }
+
+  .braincell-hero__copy h1 {
+    font-size: 50px;
+  }
+
+  .meicat-creator-fields {
+    margin-bottom: 12px;
+    font-size: 13px;
+  }
+
+  .meicat-hero__description,
+  .braincell-hero__description {
+    margin-bottom: 13px;
+  }
+
+  .gifter-avatar {
+    width: 78px;
+    height: 78px;
+
+    margin-bottom: 9px;
+  }
+
+  .social-row {
+    height: 50px;
+  }
+
+  .social-link {
+    min-height: 30px;
+  }
+
+  .download-button {
+    min-height: 46px;
+  }
+
+}
+
+
+/* ==========================================================
+   TABLET / MOBILE
+   ========================================================== */
+
+@media (max-width:900px) {
+
+  body {
+    overflow-x: hidden;
+    overflow-y: auto;
+  }
+
+  .site-header {
+    position: fixed;
+
+    top: 10px;
+    left: 50%;
+
+    width: calc(100% - 28px);
+
+    margin: 0;
+
+    padding:
+      10px
+      15px;
+
+    gap: 12px;
+
+    transform: translateX(-50%);
+  }
+
+  .site-nav {
+    gap: 14px;
+  }
+
+  .nav-link {
+    font-size: 9px;
+  }
+
+  .world-stage {
+    height: auto;
+    min-height: 100vh;
+
+    overflow: hidden;
+  }
+
+  .world {
+    position: relative;
+
+    display: none;
+
+    min-height: 100vh;
+  }
+
+  .world.is-active,
+  .world.world-enter-left,
+  .world.world-enter-right,
+  .world.world-enter-active,
+  .world.world-exit-left,
+  .world.world-exit-right {
+    display: block;
+  }
+
+  .world-inner {
+    width: calc(100% - 30px);
+    height: auto;
+
+    padding:
+      78px
+      0
+      60px;
+  }
+
+  .world-navigation {
+    top: 50%;
+
+    transform: translateY(-50%);
+  }
+
+  .world-arrow {
+    width: 38px;
+    height: 38px;
+
+    border-radius: 13px;
+
+    font-size: 21px;
+  }
+
+  .world-arrow--left {
+    left: 8px;
+  }
+
+  .world-arrow--right {
+    right: 8px;
+  }
+
+  .meicat-layout,
+  .braincell-layout {
+    display: block;
+  }
+
+  .meicat-hero,
+  .braincell-hero {
+    grid-template-columns: 1fr;
+
+    margin-bottom: 14px;
+  }
+
+  .meicat-hero {
+    min-height: 600px;
+  }
+
+  .braincell-hero {
+    min-height: auto;
+  }
+
+  .meicat-hero__art,
+  .braincell-hero__art {
+    min-height: 300px;
+
+    margin:
+      0
+      16px
+      16px;
+  }
+
+  .meicat-content,
+  .braincell-content {
+    grid-template-columns: 1fr;
+
+    gap: 14px;
+  }
+
+  .meicat-content__left {
+    display: block;
+  }
+
+  .weekly-gifters {
+    min-height: 340px;
+  }
+
+  .social-row {
+    min-height: 54px;
+    height: 54px;
+
+    margin-top: 10px;
+  }
+
+  .meiart-section {
+    overflow: hidden;
+  }
+
+  .meiart-section,
+  .tutorials-section,
+  .braincell-features,
+  .setup-showcase,
+  .braincell-shorts {
+    height: auto;
+    min-height: 430px;
+  }
+
+  .polaroid-stack {
+    height: 360px;
+  }
+
+  .feature-grid {
+    height: auto;
+
+    grid-template-columns:
+      repeat(2,minmax(0,1fr));
+
+    grid-template-rows: auto;
+  }
+
+  .setup-frame {
+    width: min(280px,100%);
+    height: auto;
+
+    aspect-ratio: 9 / 16;
+
+    margin: 0 auto;
+  }
+
+  .shorts-grid {
+    width: min(520px,100%);
+    height: auto;
+
+    margin: 0 auto;
+  }
+
+  .short-card {
+    height: auto;
+
+    aspect-ratio: 9 / 16;
+  }
+
+}
+
+
+/* ==========================================================
+   SMALL MOBILE
+   ========================================================== */
+
+@media (max-width:560px) {
+
+  .site-brand {
+    display: none;
+  }
+
+  .site-header {
+    justify-content: center;
+  }
+
+  .site-nav {
+    width: 100%;
+
+    justify-content: space-around;
+
+    gap: 4px;
+  }
+
+  .meicat-hero__copy,
+  .braincell-hero__copy {
+    padding: 28px 22px;
+  }
+
+  .meicat-hero__copy h1 {
+    font-size: 52px;
+    letter-spacing: -.015em;
+  }
+
+  .braincell-hero__copy h1 {
+    font-size: 43px;
+    letter-spacing: .025em;
+  }
+
+  .meicat-creator-fields {
+    font-size: 11px;
+  }
+
+  .gifter-grid {
+    grid-template-columns: 1fr;
+
+    height: auto;
+  }
+
+  .weekly-gifters {
+    min-height: auto;
+  }
+
+  .gifter-card {
+    min-height: 170px;
+  }
+
+  .gifter-avatar {
+    width: 84px;
+    height: 84px;
+  }
+
+  .social-row {
+    grid-template-columns:
+      repeat(5,1fr);
+
+    padding: 0 6px;
+  }
+
+  .social-link {
+    min-height: 30px;
+
+    margin: 0 2px;
+    padding: 0 3px;
+
+    font-size: 7px;
+  }
+
+  .feature-grid {
+    grid-template-columns:
+      repeat(2,minmax(0,1fr));
+  }
+
+  .shorts-grid {
+    width: 100%;
+
+    grid-template-columns:
+      repeat(2,minmax(0,1fr));
+
+    gap: 9px;
+  }
+
+  .download-buttons {
+    flex-direction: column;
+
+    width: 100%;
+  }
+
+  .download-button {
+    width: 100%;
+  }
+
+}
+
+
+/* ==========================================================
+   REDUCED MOTION
+   ========================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+
+    transition-duration: .01ms !important;
+
+    animation-duration: .01ms !important;
+
+    animation-iteration-count: 1 !important;
+  }
+
+  .braincell-aura {
+    animation: none !important;
+  }
+
+  .braincell-aura--one {
+    transform:
+      translate3d(-80px,80px,0)
+      scale(1);
+  }
+
+  .braincell-aura--two {
+    transform:
+      translate3d(80px,-50px,0)
+      scale(1);
+  }
+
+}
+/* ==========================================================
+   BRAINCELL ASSET PASS — FINAL WIRED MEDIA
+   ========================================================== */
+
+/* Hero artwork: 1600×600 source, fitted to the existing wide art window. */
+.braincell-hero__image {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+/* Quick Links: restore the Braincell liquid-glass treatment that the
+   previous placeholder rules intentionally stripped away. */
+.feature-card {
+  border: 1px solid rgba(242,220,255,.13);
+  background:
+    linear-gradient(
+      145deg,
+      rgba(255,255,255,.085) 0%,
+      rgba(255,255,255,.038) 46%,
+      rgba(220,194,235,.018) 100%
+    );
+  box-shadow:
+    0 16px 38px rgba(3,0,12,.22),
+    inset 0 1px 0 rgba(255,255,255,.15),
+    inset 0 -1px 0 rgba(180,139,204,.035);
+  backdrop-filter: blur(13px) saturate(125%);
+  -webkit-backdrop-filter: blur(13px) saturate(125%);
+  transition:
+    transform 260ms cubic-bezier(.22,1,.36,1),
+    border-color 220ms ease,
+    background 220ms ease,
+    box-shadow 240ms ease;
+}
+
+.feature-card::after {
+  content: "";
+  position: absolute;
+  z-index: 4;
+  top: 0;
+  left: 8%;
+  right: 8%;
+  height: 1px;
+  border-radius: 999px;
+  background:
+    linear-gradient(
+      90deg,
+      transparent,
+      rgba(255,255,255,.22),
+      rgba(244,225,255,.12),
+      transparent
+    );
+  pointer-events: none;
+}
+
+.feature-card:hover,
+.feature-card:focus-visible {
+  z-index: 5;
+  border-color: rgba(242,220,255,.22);
+  background:
+    linear-gradient(
+      145deg,
+      rgba(255,255,255,.12),
+      rgba(255,255,255,.042)
+    );
+  box-shadow:
+    0 20px 42px rgba(3,0,13,.27),
+    inset 0 1px 0 rgba(255,255,255,.18);
+  transform: translateY(-3px) scale(1.018);
+}
+
+.feature-art {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+/* Current HTML now contains exactly four Quick Links. */
+.feature-card:nth-child(n+5) {
+  display: block;
+}
+
+/* Setup slideshow: all three 9:16 images occupy one frame and crossfade. */
+.setup-frame {
+  isolation: isolate;
+}
+
+.setup-slides {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  overflow: hidden;
+  border-radius: inherit;
+}
+
+.setup-slide {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  opacity: 0;
+  visibility: hidden;
+  transform: scale(1.012);
+  transition:
+    opacity 700ms ease,
+    visibility 700ms ease,
+    transform 900ms cubic-bezier(.22,1,.36,1);
+}
+
+.setup-slide.is-active {
+  opacity: 1;
+  visibility: visible;
+  transform: scale(1);
+}
+
+.setup-dots {
+  z-index: 6;
+}
+
+.setup-dot {
+  appearance: none;
+  width: 6px;
+  height: 6px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: rgba(255,255,255,.30);
+  box-shadow: 0 1px 5px rgba(0,0,0,.22);
+  cursor: pointer;
+  transition:
+    width 180ms ease,
+    background 180ms ease,
+    transform 180ms ease;
+}
+
+.setup-dot:hover,
+.setup-dot:focus-visible {
+  background: rgba(255,255,255,.68);
+  transform: scale(1.15);
+  outline: none;
+}
+
+.setup-dot.is-active {
+  width: 15px;
+  border-radius: 999px;
+  background: #efa45e;
+  box-shadow: 0 2px 8px rgba(3,0,12,.30);
+}
+
+/* Braincell in Action: real 9:16 poster media. */
+.short-card--coming-soon {
+  cursor: default;
+}
+
+.short-thumb {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+/* Keep the three vertical Action cards visually vertical even though the
+   containing section is wide. */
+.shorts-grid {
+  align-items: stretch;
+}
+
+.short-card {
+  aspect-ratio: 9 / 16;
+  height: 100%;
+  justify-self: center;
+}
+
+/* Coming-soon cards are not links yet, so keep their hover restrained. */
+.short-card--coming-soon:hover {
+  border-color: rgba(241,220,251,.17);
+  background:
+    linear-gradient(
+      145deg,
+      rgba(255,255,255,.095),
+      rgba(255,255,255,.026)
+    );
+  box-shadow:
+    0 16px 32px rgba(3,0,13,.20),
+    inset 0 1px 0 rgba(255,255,255,.12);
+  transform: translateY(-2px);
+}
+
+/* ==========================================================
+   BRAINCELL ASSET PASS — COMPACT DESKTOP
+   ========================================================== */
+
+@media (max-height:780px) and (min-width:901px) {
+  .braincell-hero__art {
+    margin: 14px;
+  }
+
+  .setup-dot {
+    width: 5px;
+    height: 5px;
+  }
+
+  .setup-dot.is-active {
+    width: 13px;
+  }
+}
+
+/* ==========================================================
+   BRAINCELL ASSET PASS — TABLET / MOBILE
+   ========================================================== */
+
+@media (max-width:900px) {
+  .braincell-hero__image {
+    object-fit: cover;
+    object-position: center;
+  }
+
+  .feature-card {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 1 / 1;
+  }
+
+  .setup-slides,
+  .setup-slide {
+    border-radius: inherit;
+  }
+
+  .shorts-grid {
+    grid-template-columns: repeat(3,minmax(0,1fr));
+    width: min(720px,100%);
+  }
+
+  .short-card {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 9 / 16;
+  }
+}
+
+@media (max-width:560px) {
+  .shorts-grid {
+    grid-template-columns: repeat(2,minmax(0,1fr));
+    width: 100%;
+  }
+
+  .short-card:nth-child(3) {
+    grid-column: 1 / -1;
+    width: calc((100% - 9px) / 2);
+    justify-self: center;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .setup-slide {
+    transform: none !important;
+  }
+}
+
+/* ==========================================================
+   BRAINCELL HERO — FOREGROUND POP-OUT ART
+   ========================================================== */
+
+.braincell-hero {
+  overflow: visible;
+  isolation: isolate;
+}
+
+.braincell-hero::after {
+  z-index: 1;
+}
+
+.braincell-hero__copy {
+  position: relative;
+  z-index: 6;
+}
+
+.braincell-hero__art {
+  position: relative;
+  z-index: 5;
+  align-self: stretch;
+
+  margin: -24px -24px -18px -8px;
+
+  overflow: visible;
+
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+
+  pointer-events: none;
+}
+
+.braincell-hero__image {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+
+  display: block;
+
+  width: 112%;
+  max-width: none;
+  height: auto;
+
+  object-fit: contain;
+  object-position: center;
+
+  opacity: 1;
+
+  transform:
+    translate(-50%, -50%)
+    scale(1);
+
+  transform-origin: 54% 52%;
+
+  filter:
+    drop-shadow(0 22px 30px rgba(3,0,12,.24));
+
+  will-change:
+    transform,
+    opacity;
+
+  pointer-events: none;
+}
+
+/* Separate hero-art zoom while the Braincell world slides in. */
+
+.world--braincell.world-enter-right .braincell-hero__image {
+  opacity: 0;
+
+  transform:
+    translate(calc(-50% + 18px), calc(-50% + 18px))
+    scale(.90);
+}
+
+.world--braincell.world-enter-left .braincell-hero__image {
+  opacity: 0;
+
+  transform:
+    translate(calc(-50% - 18px), calc(-50% + 18px))
+    scale(.90);
+}
+
+.world--braincell.world-enter-active .braincell-hero__image {
+  opacity: 1;
+
+  transform:
+    translate(-50%, -50%)
+    scale(1);
+
+  transition:
+    transform 720ms cubic-bezier(.16,1,.3,1) 80ms,
+    opacity 500ms ease 80ms;
+}
+
+
+/* Compact desktop */
+
+@media (max-height: 780px) and (min-width: 901px) {
+
+  .braincell-hero__art {
+    margin: -20px -20px -14px -6px;
+  }
+
+  .braincell-hero__image {
+    width: 110%;
+  }
+
+}
+
+
+/* Tablet / mobile */
+
+@media (max-width: 900px) {
+
+  .braincell-hero {
+    overflow: hidden;
+  }
+
+  .braincell-hero__art {
+    min-height: 300px;
+    margin: 0 12px 12px;
+    overflow: visible;
+  }
+
+  .braincell-hero__image {
+    width: 106%;
+
+    filter:
+      drop-shadow(0 18px 26px rgba(3,0,12,.20));
+  }
+
+}
+
+@media (max-width: 560px) {
+
+  .braincell-hero__art {
+    min-height: 250px;
+    margin: -35px 6px 8px;
+  }
+
+  .braincell-hero__image {
+    width: 112%;
+  }
+
+}
+
+
+/* Reduced motion */
+
+@media (prefers-reduced-motion: reduce) {
+
+  .world--braincell.world-enter-right .braincell-hero__image,
+  .world--braincell.world-enter-left .braincell-hero__image,
+  .world--braincell.world-enter-active .braincell-hero__image {
+    opacity: 1;
+
+    transform:
+      translate(-50%, -50%)
+      scale(1);
+
+    transition: none;
+  }
+
+}
+
+
+/* ==========================================================
+   BRAINCELL FINAL HERO POSITION + ORANGE AMBIENT AURA
+   ========================================================== */
+
+/* Soft environmental orange light behind the Braincell UI.
+   This uses the existing .braincell-atmosphere element directly,
+   so no extra HTML aura elements are required. */
+.braincell-atmosphere::after {
+  content: "";
+
+  position: absolute;
+  z-index: 0;
+
+  width: min(984px, 69.6vw);
+  height: min(744px, 81.6vh);
+
+  top: -170px;
+  right: 8%;
+
+  border-radius: 50%;
+
+  background:
+    radial-gradient(
+      ellipse at center,
+      rgba(244, 158, 82, .18) 0%,
+      rgba(229, 116, 68, .105) 30%,
+      rgba(196, 78, 79, .045) 52%,
+      transparent 74%
+    );
+
+  filter: blur(42px);
+  opacity: .92;
+
+  pointer-events: none;
+
+  transform: translate3d(0,0,0) scale(1);
+  transform-origin: center;
+
+  animation:
+    braincellAmbientOrange 8s
+    ease-in-out
+    infinite alternate;
+}
+
+@keyframes braincellAmbientOrange {
+  from {
+    opacity: .78;
+    transform:
+      translate3d(0,0,0)
+      scale(.98);
+  }
+
+  to {
+    opacity: 1;
+    transform:
+      translate3d(-34px,24px,0)
+      scale(1.06);
+  }
+}
+
+
+/* Shift the transparent hero composition left.
+   The artwork still floats above the hero glass and keeps
+   the separate zoom-in entrance animation. */
+.braincell-hero__image {
+  left: 44%;
+
+  transform:
+    translate(-50%, -50%)
+    scale(1);
+}
+
+.world--braincell.world-enter-right .braincell-hero__image {
+  opacity: 0;
+
+  transform:
+    translate(calc(-50% + 18px), calc(-50% + 18px))
+    scale(.90);
+}
+
+.world--braincell.world-enter-left .braincell-hero__image {
+  opacity: 0;
+
+  transform:
+    translate(calc(-50% - 18px), calc(-50% + 18px))
+    scale(.90);
+}
+
+.world--braincell.world-enter-active .braincell-hero__image {
+  opacity: 1;
+
+  transform:
+    translate(-50%, -50%)
+    scale(1);
+
+  transition:
+    transform 720ms cubic-bezier(.16,1,.3,1) 80ms,
+    opacity 500ms ease 80ms;
+}
+
+
+/* Keep the shift slightly gentler on stacked layouts. */
+@media (max-width: 900px) {
+  .braincell-hero__image {
+    left: 48%;
+  }
+}
+
+@media (max-width: 560px) {
+  .braincell-hero__image {
+    left: 50%;
+  }
+}
+
+
+/* Respect reduced-motion without removing the ambient color. */
+@media (prefers-reduced-motion: reduce) {
+  .braincell-atmosphere::after {
+    animation: none;
+
+    opacity: .88;
+
+    transform: none;
+  }
+
+  .world--braincell.world-enter-right .braincell-hero__image,
+  .world--braincell.world-enter-left .braincell-hero__image,
+  .world--braincell.world-enter-active .braincell-hero__image {
+    opacity: 1;
+
+    transform:
+      translate(-50%, -50%)
+      scale(1);
+
+    transition: none;
+  }
+}
+
+/* Keep Braincell to one ambient aura only. */
+.braincell-aura {
+  display: none !important;
+}
+
+/* ==========================================================
+   BRAINCELL — SINGLE TRAVELING ORANGE AURA
+   ========================================================== */
+
+.braincell-aura {
+  display: none !important;
+}
+
+.braincell-atmosphere::after {
+  content: "";
+  position: absolute;
+  z-index: 0;
+
+  top: -22%;
+  left: 58%;
+
+  width: min(984px, 69.6vw);
+  height: min(744px, 81.6vh);
+
+  border-radius: 50%;
+
+  background:
+    radial-gradient(
+      ellipse at center,
+      rgba(255,190,112,.23) 0%,
+      rgba(242,145,73,.18) 22%,
+      rgba(225,104,63,.105) 43%,
+      rgba(205,84,75,.045) 61%,
+      transparent 76%
+    );
+
+  filter: blur(42px);
+  opacity: .92;
+
+  pointer-events: none;
+  transform-origin: center;
+  will-change: transform, opacity;
+
+  animation:
+    braincellSingleOrangeTravel
+    8s
+    linear
+    infinite;
+}
+
+@keyframes braincellSingleOrangeTravel {
+  0% {
+    opacity: .90;
+    transform: translate3d(0,0,0) scale(1);
+  }
+
+  18% {
+    opacity: 1;
+    transform: translate3d(8vw,30vh,0) scale(1.04);
+  }
+
+  36% {
+    opacity: .94;
+    transform: translate3d(-18vw,58vh,0) scale(.98);
+  }
+
+  54% {
+    opacity: .98;
+    transform: translate3d(-58vw,50vh,0) scale(1.05);
+  }
+
+  70% {
+    opacity: .91;
+    transform: translate3d(-62vw,8vh,0) scale(1);
+  }
+
+  84% {
+    opacity: .98;
+    transform: translate3d(-28vw,-7vh,0) scale(1.04);
+  }
+
+  100% {
+    opacity: .90;
+    transform: translate3d(0,0,0) scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .braincell-atmosphere::after {
+    animation: none;
+    opacity: .90;
+    transform: translate3d(0,0,0) scale(1);
+  }
+}
+
+/* ==========================================================
+   MEICAT — DEEP BERRY TYPOGRAPHY
+   ========================================================== */
+.world--meicat { color: #54283e; }
+
+.world--meicat .meicat-hero__copy h1,
+.world--meicat .meicat-creator-fields,
+.world--meicat .section-heading h2 {
+  color: #54283e;
+}
+
+.world--meicat .gifter-card strong,
+.world--meicat .tutorial-card strong {
+  color: #613249;
+}
+
+.world--meicat .meicat-hero__description,
+.world--meicat .tutorial-card p {
+  color: #805b6d;
+}
+
+.world--meicat .tiny-note,
+.world--meicat .polaroid p {
+  color: #9b667f;
+}
+
+.world--meicat .social-link {
+  color: #714158;
+}
+
+/* ==========================================================
+   MEICAT — REAL ASSET INTEGRATION
+   ========================================================== */
+
+/* Keep the Meicat world in the deeper berry family. */
+.world--meicat {
+  color: #54283e;
+}
+
+.world--meicat .meicat-hero__copy h1,
+.world--meicat .meicat-creator-fields,
+.world--meicat .section-heading h2 {
+  color: #54283e;
+}
+
+.world--meicat .meicat-hero__description,
+.world--meicat .tutorial-card p {
+  color: #805b6d;
+}
+
+.world--meicat .tiny-note,
+.world--meicat .polaroid p {
+  color: #9b667f;
+}
+
+.world--meicat .social-link {
+  color: #714158;
+}
+
+
+/* HERO ART */
+
+.meicat-hero {
+  isolation: isolate;
+}
+
+.meicat-hero__copy {
+  position: relative;
+  z-index: 5;
+}
+
+.meicat-hero__art {
+  position: relative;
+  z-index: 4;
+
+  align-self: stretch;
+
+  margin:
+    -16px
+    18px
+    -12px
+    0;
+
+  overflow: visible;
+
+  border: 0;
+  border-radius: 30px;
+
+  background:
+    radial-gradient(
+      circle at 52% 58%,
+      rgba(244,169,199,.24),
+      transparent 44%
+    ),
+    rgba(255,242,247,.18);
+}
+
+.meicat-hero__image {
+  position: absolute;
+
+  left: 50%;
+  top: 50%;
+
+  width: 108%;
+  height: auto;
+  max-width: none;
+  max-height: 118%;
+
+  object-fit: contain;
+
+  filter:
+    drop-shadow(0 20px 30px rgba(112,57,82,.12));
+
+  transform:
+    translate(-50%,-50%)
+    scale(1);
+
+  transform-origin: center;
+
+  transition:
+    transform 700ms cubic-bezier(.16,1,.3,1),
+    opacity 520ms ease;
+}
+
+.world--meicat.world-enter-right .meicat-hero__image {
+  opacity: 0;
+  transform:
+    translate(-46%,-47%)
+    scale(.94);
+}
+
+.world--meicat.world-enter-left .meicat-hero__image {
+  opacity: 0;
+  transform:
+    translate(-54%,-47%)
+    scale(.94);
+}
+
+.world--meicat.world-enter-active .meicat-hero__image,
+.world--meicat.is-active .meicat-hero__image {
+  opacity: 1;
+  transform:
+    translate(-50%,-50%)
+    scale(1);
+}
+
+
+/* WEEKLY TOP GIFTERS — FULL ART CARDS */
+
+.gifter-grid {
+  align-items: stretch;
+}
+
+.gifter-card {
+  position: relative;
+
+  display: block;
+
+  min-width: 0;
+  min-height: 0;
+
+  padding: 0;
+
+  overflow: hidden;
+
+  border: 1px solid rgba(233,160,190,.36);
+  border-radius: 20px;
+
+  background: rgba(255,251,251,.45);
+
+  isolation: isolate;
+
+  transition:
+    transform 220ms cubic-bezier(.22,1,.36,1),
+    border-color 180ms ease,
+    box-shadow 220ms ease;
+}
+
+.gifter-card__image {
+  position: absolute;
+  inset: 0;
+
+  z-index: 0;
+
+  width: 100%;
+  height: 100%;
+
+  object-fit: cover;
+  object-position: center;
+
+  transition:
+    transform 420ms cubic-bezier(.22,1,.36,1);
+}
+
+.gifter-card__shade {
+  position: absolute;
+  inset: 0;
+
+  z-index: 1;
+
+  background:
+    linear-gradient(
+      to top,
+      rgba(84,40,62,.54) 0%,
+      rgba(84,40,62,.18) 27%,
+      transparent 55%
+    );
+
+  pointer-events: none;
+}
+
+.gifter-card__identity {
+  position: absolute;
+
+  z-index: 2;
+
+  left: 12px;
+  right: 12px;
+  bottom: 12px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  min-width: 0;
+
+  color: #fff;
+
+  text-align: center;
+
+  pointer-events: none;
+}
+
+.gifter-card__identity strong {
+  display: block;
+
+  width: 100%;
+
+  overflow: hidden;
+
+  color: #fff !important;
+
+  font-size: 14px;
+  font-weight: 900;
+  line-height: 1.08;
+
+  text-overflow: ellipsis;
+  white-space: nowrap;
+
+  -webkit-text-stroke:
+    .65px rgba(84,40,62,.86);
+
+  paint-order: stroke fill;
+
+  text-shadow:
+    0 1px 1px rgba(84,40,62,.78),
+    0 2px 5px rgba(84,40,62,.42);
+}
+
+.gifter-card__identity small {
+  display: block;
+
+  width: 100%;
+
+  margin-top: 4px;
+
+  overflow: hidden;
+
+  color: #fff;
+
+  font-size: 9px;
+  font-weight: 850;
+  line-height: 1.1;
+
+  text-overflow: ellipsis;
+  white-space: nowrap;
+
+  -webkit-text-stroke:
+    .45px rgba(84,40,62,.82);
+
+  paint-order: stroke fill;
+
+  text-shadow:
+    0 1px 1px rgba(84,40,62,.76),
+    0 2px 4px rgba(84,40,62,.38);
+}
+
+.gifter-card:hover,
+.gifter-card:focus-visible {
+  z-index: 3;
+
+  border-color: rgba(233,110,167,.54);
+
+  background: transparent;
+
+  transform:
+    translateY(-4px)
+    scale(1.025);
+
+  box-shadow:
+    0 16px 32px rgba(120,72,93,.14);
+}
+
+.gifter-card:hover .gifter-card__image,
+.gifter-card:focus-visible .gifter-card__image {
+  transform: scale(1.035);
+}
+
+
+/* #MEIART — REAL IMAGES + CROSSFADE */
+
+.polaroid__image {
+  position: relative;
+
+  overflow: hidden;
+
+  aspect-ratio: 1 / 1;
+
+  background:
+    linear-gradient(
+      145deg,
+      rgba(255,247,249,.92),
+      rgba(255,238,245,.8)
+    );
+}
+
+.meiart-image {
+  position: absolute;
+  inset: 0;
+
+  width: 100%;
+  height: 100%;
+
+  object-fit: cover;
+
+  opacity: 1;
+
+  transition:
+    opacity 520ms ease;
+}
+
+.meiart-image.is-changing {
+  opacity: 0;
+}
+
+.meiart-credit {
+  transition:
+    opacity 260ms ease;
+}
+
+
+/* TUTORIALS — REAL THUMBNAILS */
+
+.tutorial-thumb {
+  display: block;
+
+  width: 100%;
+  height: 100%;
+
+  min-height: 0;
+
+  object-fit: cover;
+  object-position: center;
+
+  border: 0;
+  border-radius: 15px;
+}
+
+.tutorial-card--coming-soon {
+  cursor: default;
+}
+
+.tutorial-card--coming-soon:hover,
+.tutorial-card--coming-soon:focus-visible {
+  transform: none;
+  box-shadow: none;
+}
+
+
+/* COMPACT DESKTOP */
+
+@media (max-height:780px) and (min-width:901px) {
+  .gifter-card__identity {
+    left: 9px;
+    right: 9px;
+    bottom: 9px;
+  }
+
+  .gifter-card__identity strong {
+    font-size: 12px;
+  }
+
+  .gifter-card__identity small {
+    font-size: 8px;
+  }
+}
+
+
+/* TABLET / MOBILE */
+
+@media (max-width:900px) {
+  .meicat-hero__art {
+    min-height: 300px;
+
+    margin:
+      0
+      16px
+      16px;
+
+    overflow: hidden;
+  }
+
+  .meicat-hero__image {
+    width: 100%;
+    max-height: 108%;
+  }
+
+  .weekly-gifters {
+    min-height: 430px;
+  }
+
+  .gifter-grid {
+    height: 350px;
+  }
+}
+
+
+/* SMALL MOBILE */
+
+@media (max-width:560px) {
+  .weekly-gifters {
+    min-height: auto;
+  }
+
+  .gifter-grid {
+    grid-template-columns: 1fr;
+    height: auto;
+  }
+
+  .gifter-card {
+    min-height: 360px;
+    aspect-ratio: 2 / 3;
+  }
+
+  .gifter-card__identity strong {
+    font-size: 16px;
+  }
+
+  .gifter-card__identity small {
+    font-size: 10px;
+  }
+}
+
+
+/* REDUCED MOTION */
+
+@media (prefers-reduced-motion: reduce) {
+  .meicat-hero__image,
+  .gifter-card,
+  .gifter-card__image,
+  .meiart-image {
+    transition: none;
+  }
+
+  .world--meicat.world-enter-right .meicat-hero__image,
+  .world--meicat.world-enter-left .meicat-hero__image,
+  .world--meicat.world-enter-active .meicat-hero__image,
+  .world--meicat.is-active .meicat-hero__image {
+    opacity: 1;
+    transform:
+      translate(-50%,-50%)
+      scale(1);
+  }
+}
+/* ==========================================================
+   MEICAT — FINAL INTEGRATION
+   ========================================================== */
+
+/* ----------------------------------------------------------
+   MEICAT HERO — KABOOM CHARACTER
+   ---------------------------------------------------------- */
+
+.world--meicat .meicat-hero {
+  position: relative;
+  isolation: isolate;
+  overflow: visible;
+}
+
+.world--meicat .meicat-hero__copy {
+  position: relative;
+  z-index: 6;
+}
+
+.world--meicat .meicat-hero__art {
+  position: relative;
+  z-index: 5;
+
+  align-self: stretch;
+
+  margin: 0;
+
+  overflow: visible;
+
+  border: 0;
+  border-radius: 0;
+
+  background: transparent;
+
+  box-shadow: none;
+
+  pointer-events: none;
+}
+
+/* soft atmosphere behind character */
+
+.world--meicat .meicat-hero__art::before {
+  content: "";
+
+  position: absolute;
+
+  z-index: -1;
+
+  top: 50%;
+  left: 42%;
+
+  width: 82%;
+  height: 92%;
+
+  border-radius: 50%;
+
+  background:
+    radial-gradient(
+      ellipse at center,
+      rgba(243,169,200,.34) 0%,
+      rgba(251,233,241,.28) 32%,
+      rgba(242,221,169,.13) 52%,
+      transparent 73%
+    );
+
+  filter: blur(30px);
+
+  transform:
+    translate(-50%,-50%);
+
+  pointer-events: none;
+}
+
+.world--meicat .meicat-hero__image {
+  position: absolute;
+
+  top: 50%;
+  left: 39%;
+
+  display: block;
+
+  width: 145%;
+  max-width: none;
+  height: auto;
+
+  object-fit: contain;
+  object-position: center;
+
+  opacity: 1;
+
+  transform:
+    translate(-50%,-50%)
+    scale(1);
+
+  transform-origin: 50% 55%;
+
+  filter:
+    drop-shadow(
+      0 24px 28px
+      rgba(84,40,62,.13)
+    );
+
+  pointer-events: none;
+
+  will-change:
+    transform,
+    opacity;
+}
+
+
+/* Meicat character entrance */
+
+.world--meicat.world-enter-right
+.meicat-hero__image {
+  opacity: 0;
+
+  transform:
+    translate(
+      calc(-50% + 20px),
+      calc(-50% + 16px)
+    )
+    scale(.91);
+}
+
+.world--meicat.world-enter-left
+.meicat-hero__image {
+  opacity: 0;
+
+  transform:
+    translate(
+      calc(-50% - 20px),
+      calc(-50% + 16px)
+    )
+    scale(.91);
+}
+
+.world--meicat.world-enter-active
+.meicat-hero__image {
+  opacity: 1;
+
+  transform:
+    translate(-50%,-50%)
+    scale(1);
+
+  transition:
+    transform
+    720ms
+    cubic-bezier(.16,1,.3,1)
+    80ms,
+
+    opacity
+    480ms
+    ease
+    80ms;
+}
+
+
+/* ----------------------------------------------------------
+   MEICAT TYPOGRAPHY
+   ---------------------------------------------------------- */
+
+.world--meicat {
+  color: #54283e;
+}
+
+.world--meicat
+.meicat-hero__copy h1 {
+  color: #54283e;
+}
+
+.world--meicat
+.meicat-creator-fields {
+  color: #54283e;
+}
+
+.world--meicat
+.section-heading h2 {
+  color: #54283e;
+}
+
+.world--meicat
+.meicat-hero__description {
+  color: #805b6d;
+}
+
+.world--meicat
+.tiny-note {
+  color: #9b667f;
+}
+
+.world--meicat
+.social-link {
+  color: #714158;
+}
+
+
+/* ----------------------------------------------------------
+   WEEKLY GIFTERS — FULL ART CARDS
+   ---------------------------------------------------------- */
+
+.world--meicat .gifter-grid {
+  display: grid;
+
+  grid-template-columns:
+    repeat(3,minmax(0,1fr));
+
+  gap: 10px;
+
+  height:
+    calc(100% - 41px);
+}
+
+.world--meicat .gifter-card {
+  position: relative;
+
+  display: block;
+
+  min-width: 0;
+  min-height: 0;
+
+  padding: 0;
+
+  overflow: hidden;
+
+  border:
+    1px solid
+    rgba(255,255,255,.72);
+
+  border-radius: 19px;
+
+  background:
+    #fbe9f1;
+
+  box-shadow:
+    0 12px 26px
+    rgba(84,40,62,.08);
+
+  isolation: isolate;
+
+  transition:
+    transform
+    240ms
+    cubic-bezier(.22,1,.36,1),
+
+    box-shadow
+    220ms
+    ease,
+
+    border-color
+    220ms
+    ease;
+}
+
+.world--meicat
+.gifter-card:hover,
+.world--meicat
+.gifter-card:focus-visible {
+  z-index: 5;
+
+  border-color:
+    rgba(233,110,167,.34);
+
+  transform:
+    translateY(-4px)
+    scale(1.025);
+
+  box-shadow:
+    0 18px 34px
+    rgba(84,40,62,.14);
+
+  outline: none;
+}
+
+
+/* actual portrait */
+
+.world--meicat
+.gifter-card__image {
+  position: absolute;
+
+  inset: 0;
+
+  z-index: 1;
+
+  display: block;
+
+  width: 100%;
+  height: 100%;
+
+  object-fit: cover;
+  object-position: center;
+
+  transition:
+    transform
+    420ms
+    cubic-bezier(.22,1,.36,1);
+}
+
+.world--meicat
+.gifter-card:hover
+.gifter-card__image,
+.world--meicat
+.gifter-card:focus-visible
+.gifter-card__image {
+  transform: scale(1.035);
+}
+
+
+/* readability gradient */
+
+.world--meicat
+.gifter-card__shade {
+  position: absolute;
+
+  z-index: 2;
+
+  inset: 0;
+
+  background:
+    linear-gradient(
+      to bottom,
+      transparent 44%,
+      rgba(84,40,62,.08) 60%,
+      rgba(84,40,62,.74) 100%
+    );
+
+  pointer-events: none;
+}
+
+
+/* name + username */
+
+.world--meicat
+.gifter-card__identity {
+  position: absolute;
+
+  z-index: 4;
+
+  left: 12px;
+  right: 12px;
+  bottom: 12px;
+
+  display: flex;
+  flex-direction: column;
+
+  min-width: 0;
+
+  color: #fff;
+
+  text-align: left;
+
+  pointer-events: none;
+}
+
+.world--meicat
+.gifter-card__identity strong {
+  display: block;
+
+  max-width: 100%;
+
+  overflow: hidden;
+
+  color: #fff;
+
+  font-size: 13px;
+  font-weight: 900;
+
+  line-height: 1.15;
+
+  text-overflow: ellipsis;
+  white-space: nowrap;
+
+  text-shadow:
+    -1px -1px 0 #54283e,
+     1px -1px 0 #54283e,
+    -1px  1px 0 #54283e,
+     1px  1px 0 #54283e,
+     0 2px 7px rgba(84,40,62,.55);
+}
+
+.world--meicat
+.gifter-card__identity small {
+  display: block;
+
+  margin-top: 4px;
+
+  overflow: hidden;
+
+  color: #fff;
+
+  font-size: 9px;
+  font-weight: 800;
+
+  line-height: 1.1;
+
+  text-overflow: ellipsis;
+  white-space: nowrap;
+
+  text-shadow:
+    -1px -1px 0 #54283e,
+     1px -1px 0 #54283e,
+    -1px  1px 0 #54283e,
+     1px  1px 0 #54283e,
+     0 2px 6px rgba(84,40,62,.5);
+}
+
+
+/* ----------------------------------------------------------
+   GIFTER RANK MEDALS
+   ---------------------------------------------------------- */
+
+.world--meicat
+.gifter-rank {
+  position: absolute;
+
+  z-index: 6;
+
+  top: 10px;
+  right: 10px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 46px;
+  height: 46px;
+
+  border-radius: 50%;
+
+  box-shadow:
+    0 7px 15px
+    rgba(84,40,62,.24),
+
+    inset
+    0 2px 2px
+    rgba(255,255,255,.75),
+
+    inset
+    0 -3px 4px
+    rgba(84,40,62,.18);
+
+  pointer-events: none;
+}
+
+.world--meicat
+.gifter-rank::before {
+  content: "";
+
+  position: absolute;
+
+  inset: 4px;
+
+  border:
+    1px solid
+    rgba(255,255,255,.64);
+
+  border-radius: inherit;
+}
+
+.world--meicat
+.gifter-rank::after {
+  content: "";
+
+  position: absolute;
+
+  top: 5px;
+  left: 9px;
+
+  width: 18px;
+  height: 8px;
+
+  border-radius: 50%;
+
+  background:
+    rgba(255,255,255,.46);
+
+  filter: blur(1px);
+
+  transform: rotate(-25deg);
+}
+
+.world--meicat
+.gifter-rank__number {
+  position: relative;
+
+  z-index: 2;
+
+  font-size: 19px;
+  font-weight: 950;
+
+  line-height: 1;
+
+  text-shadow:
+    0 1px 0
+    rgba(255,255,255,.45);
+}
+
+
+/* gold */
+
+.world--meicat
+.gifter-rank--gold {
+  border:
+    2px solid
+    #c99425;
+
+  background:
+    radial-gradient(
+      circle at 32% 25%,
+      #fff5bd 0%,
+      #f8d568 26%,
+      #dca633 60%,
+      #b97813 100%
+    );
+}
+
+.world--meicat
+.gifter-rank--gold
+.gifter-rank__number {
+  color: #79500d;
+}
+
+
+/* silver */
+
+.world--meicat
+.gifter-rank--silver {
+  border:
+    2px solid
+    #a5a8b0;
+
+  background:
+    radial-gradient(
+      circle at 32% 25%,
+      #ffffff 0%,
+      #e6e8ec 27%,
+      #b9bdc5 61%,
+      #858a94 100%
+    );
+}
+
+.world--meicat
+.gifter-rank--silver
+.gifter-rank__number {
+  color: #60646c;
+}
+
+
+/* bronze */
+
+.world--meicat
+.gifter-rank--bronze {
+  border:
+    2px solid
+    #a76535;
+
+  background:
+    radial-gradient(
+      circle at 32% 25%,
+      #f6d2ad 0%,
+      #d9945c 27%,
+      #b86e3d 61%,
+      #824421 100%
+    );
+}
+
+.world--meicat
+.gifter-rank--bronze
+.gifter-rank__number {
+  color: #6b351a;
+}
+
+
+/* ----------------------------------------------------------
+   #MEIART
+   ---------------------------------------------------------- */
+
+.world--meicat
+.polaroid {
+  overflow: hidden;
+}
+
+.world--meicat
+.polaroid__image {
+  position: relative;
+
+  width: 100%;
+
+  aspect-ratio: 1 / 1;
+
+  overflow: hidden;
+
+  background:
+    #fbe9f1;
+}
+
+.world--meicat
+.meiart-image {
+  display: block;
+
+  width: 100%;
+  height: 100%;
+
+  object-fit: cover;
+  object-position: center;
+
+  opacity: 1;
+
+  transform: scale(1);
+
+  transition:
+    opacity 360ms ease,
+    transform 520ms
+    cubic-bezier(.22,1,.36,1);
+}
+
+.world--meicat
+.meiart-image.is-changing {
+  opacity: 0;
+
+  transform: scale(1.015);
+}
+
+.world--meicat
+.meiart-credit {
+  margin: 8px 0 0;
+
+  color: #9b667f;
+
+  font-size: 9px;
+  font-weight: 850;
+
+  text-align: center;
+
+  opacity: 1;
+
+  transition:
+    opacity 300ms ease;
+}
+
+.world--meicat
+.meiart-credit.is-changing {
+  opacity: 0;
+}
+
+
+/* Back Polaroid rises above the front one */
+
+.world--meicat
+.polaroid--one:hover,
+.world--meicat
+.polaroid--one:focus-visible {
+  z-index: 30;
+
+  transform:
+    translate(8px,4px)
+    rotate(-1deg)
+    scale(1.03);
+}
+
+.world--meicat
+.polaroid--two:hover,
+.world--meicat
+.polaroid--two:focus-visible {
+  z-index: 30;
+
+  transform:
+    translate(-5px,-5px)
+    rotate(1deg)
+    scale(1.03);
+}
+
+
+/* ----------------------------------------------------------
+   TUTORIAL THUMBNAILS — FULL IMAGE, NO CROP
+   ---------------------------------------------------------- */
+
+.world--meicat
+.tutorial-card {
+  grid-template-columns:
+    38%
+    minmax(0,1fr);
+}
+
+.world--meicat
+.tutorial-thumb {
+  position: relative;
+
+  align-self: center;
+
+  width: 100%;
+
+  aspect-ratio: 16 / 9;
+
+  min-height: 0;
+
+  overflow: hidden;
+
+  border-radius: 14px;
+
+  background:
+    linear-gradient(
+      145deg,
+      #fbe9f1,
+      #f8f1ed
+    );
+}
+
+.world--meicat
+.tutorial-thumb__image {
+  display: block;
+
+  width: 100%;
+  height: 100%;
+
+  object-fit: contain;
+  object-position: center;
+
+  background:
+    #fbe9f1;
+}
+
+.world--meicat
+.tutorial-card__copy {
+  min-width: 0;
+
+  padding: 10px 13px;
+}
+
+.world--meicat
+.tutorial-card strong {
+  color: #613249;
+}
+
+.world--meicat
+.tutorial-card p {
+  color: #805b6d;
+}
+
+.world--meicat
+.tutorial-card--coming-soon {
+  cursor: default;
+}
+
+.world--meicat
+.tutorial-card--coming-soon:hover {
+  transform: none;
+
+  background:
+    rgba(255,251,251,.44);
+
+  box-shadow: none;
+}
+
+
+/* ==========================================================
+   COMPACT DESKTOP
+   ========================================================== */
+
+@media
+(max-height:780px)
+and
+(min-width:901px) {
+
+  .world--meicat
+  .meicat-hero__image {
+    width: 140%;
+    left: 40%;
+  }
+
+  .world--meicat
+  .gifter-rank {
+    width: 40px;
+    height: 40px;
+
+    top: 8px;
+    right: 8px;
+  }
+
+  .world--meicat
+  .gifter-rank__number {
+    font-size: 17px;
+  }
+
+  .world--meicat
+  .gifter-card__identity {
+    left: 10px;
+    right: 10px;
+    bottom: 10px;
+  }
+
+  .world--meicat
+  .gifter-card__identity strong {
+    font-size: 11px;
+  }
+
+}
+
+
+/* ==========================================================
+   TABLET
+   ========================================================== */
+
+@media (max-width:900px) {
+
+  .world--meicat
+  .meicat-hero {
+    overflow: hidden;
+  }
+
+  .world--meicat
+  .meicat-hero__art {
+    min-height: 330px;
+
+    margin:
+      0
+      10px
+      8px;
+  }
+
+  .world--meicat
+  .meicat-hero__image {
+    width: 112%;
+
+    top: 52%;
+    left: 48%;
+  }
+
+  .world--meicat
+  .meicat-hero__art::before {
+    left: 50%;
+
+    width: 90%;
+    height: 90%;
+  }
+
+  .world--meicat
+  .gifter-card {
+    aspect-ratio: 2 / 3;
+  }
+
+  .world--meicat
+  .tutorial-card {
+    grid-template-columns:
+      minmax(150px,34%)
+      minmax(0,1fr);
+  }
+
+}
+
+
+/* ==========================================================
+   SMALL MOBILE
+   ========================================================== */
+
+@media (max-width:560px) {
+
+  .world--meicat
+  .meicat-hero__art {
+    min-height: 280px;
+
+    margin:
+      0
+      4px
+      8px;
+  }
+
+  .world--meicat
+  .meicat-hero__image {
+    width: 118%;
+
+    top: 52%;
+    left: 50%;
+  }
+
+  .world--meicat
+  .gifter-grid {
+    grid-template-columns: 1fr;
+
+    height: auto;
+  }
+
+  .world--meicat
+  .gifter-card {
+    width: min(260px,100%);
+
+    min-height: 0;
+
+    aspect-ratio: 2 / 3;
+
+    margin: 0 auto;
+  }
+
+  .world--meicat
+  .gifter-rank {
+    width: 48px;
+    height: 48px;
+
+    top: 12px;
+    right: 12px;
+  }
+
+  .world--meicat
+  .gifter-rank__number {
+    font-size: 20px;
+  }
+
+  .world--meicat
+  .tutorial-card {
+    grid-template-columns: 1fr;
+
+    padding: 8px;
+  }
+
+  .world--meicat
+  .tutorial-thumb {
+    width: 100%;
+  }
+
+  .world--meicat
+  .tutorial-card__copy {
+    padding:
+      8px
+      5px
+      6px;
+  }
+
+}
+
+/* ==========================================================
+   REDUCED MOTION
+   ========================================================== */
+
+@media
+(prefers-reduced-motion:reduce) {
+
+  .world--meicat
+  .meiart-image,
+  .world--meicat
+  .meiart-credit {
+    transition: none;
+  }
+
+  .world--meicat.world-enter-right
+  .meicat-hero__image,
+
+  .world--meicat.world-enter-left
+  .meicat-hero__image,
+
+  .world--meicat.world-enter-active
+  .meicat-hero__image {
+
+    opacity: 1;
+
+    transform:
+      translate(-50%,-50%)
+      scale(1);
+
+    transition: none;
+  }
+
+}
+/* ==========================================================
+   MEICAT — SIZE + MOTION TUNING
+   ========================================================== */
+
+/* ----------------------------------------------------------
+   HERO CHARACTER
+   Smaller resting composition while keeping the pop-out.
+   ---------------------------------------------------------- */
+
+.world--meicat .meicat-hero__image {
+  top: 50%;
+  left: 43%;
+
+  width: 120%;
+
+  transform:
+    translate(-50%, -50%)
+    scale(1);
+
+  transform-origin: 50% 55%;
+}
+
+
+/* Entering from the RIGHT */
+
+.world--meicat.world-enter-right
+.meicat-hero__image {
+  opacity: 0;
+
+  transform:
+    translate(
+      calc(-50% + 18px),
+      calc(-50% + 18px)
+    )
+    scale(.90);
+}
+
+
+/* Entering from the LEFT */
+
+.world--meicat.world-enter-left
+.meicat-hero__image {
+  opacity: 0;
+
+  transform:
+    translate(
+      calc(-50% - 18px),
+      calc(-50% + 18px)
+    )
+    scale(.90);
+}
+
+
+/* Zoom into final resting size */
+
+.world--meicat.world-enter-active
+.meicat-hero__image {
+  opacity: 1;
+
+  transform:
+    translate(-50%, -50%)
+    scale(1);
+
+  transition:
+    transform
+    720ms
+    cubic-bezier(.16,1,.3,1)
+    80ms,
+
+    opacity
+    500ms
+    ease
+    80ms;
+}
+
+
+/* ----------------------------------------------------------
+   GIFTER RANKS — SMALLER
+   ---------------------------------------------------------- */
+
+.world--meicat .gifter-rank {
+  width: 34px;
+  height: 34px;
+
+  top: 8px;
+  right: 8px;
+
+  border-width: 1.5px;
+
+  box-shadow:
+    0 5px 11px rgba(84,40,62,.20),
+
+    inset
+    0 1px 1px
+    rgba(255,255,255,.72),
+
+    inset
+    0 -2px 3px
+    rgba(84,40,62,.15);
+}
+
+.world--meicat
+.gifter-rank::before {
+  inset: 3px;
+}
+
+.world--meicat
+.gifter-rank::after {
+  top: 4px;
+  left: 7px;
+
+  width: 13px;
+  height: 5px;
+}
+
+.world--meicat
+.gifter-rank__number {
+  font-size: 14px;
+}
+
+
+/* ----------------------------------------------------------
+   COMPACT DESKTOP
+   ---------------------------------------------------------- */
+
+@media
+(max-height:780px)
+and
+(min-width:901px) {
+
+  .world--meicat
+  .meicat-hero__image {
+    width: 116%;
+    left: 44%;
+  }
+
+  .world--meicat
+  .gifter-rank {
+    width: 31px;
+    height: 31px;
+
+    top: 7px;
+    right: 7px;
+  }
+
+  .world--meicat
+  .gifter-rank__number {
+    font-size: 13px;
+  }
+
+}
+
+
+/* ----------------------------------------------------------
+   TABLET
+   ---------------------------------------------------------- */
+
+@media (max-width:900px) {
+
+  .world--meicat
+  .meicat-hero__image {
+    width: 106%;
+
+    top: 52%;
+    left: 49%;
+  }
+
+}
+
+
+/* ----------------------------------------------------------
+   MOBILE
+   ---------------------------------------------------------- */
+
+@media (max-width:560px) {
+
+  .world--meicat
+  .meicat-hero__image {
+    width: 110%;
+
+    top: 52%;
+    left: 50%;
+  }
+
+  .world--meicat
+  .gifter-rank {
+    width: 36px;
+    height: 36px;
+
+    top: 9px;
+    right: 9px;
+  }
+
+  .world--meicat
+  .gifter-rank__number {
+    font-size: 15px;
+  }
+
+}
+
+/* ----------------------------------------------------------
+   REDUCED MOTION
+   ---------------------------------------------------------- */
+
+@media (prefers-reduced-motion:reduce) {
+
+  .world--meicat.world-enter-right
+  .meicat-hero__image,
+
+  .world--meicat.world-enter-left
+  .meicat-hero__image,
+
+  .world--meicat.world-enter-active
+  .meicat-hero__image {
+
+    opacity: 1;
+
+    transform:
+      translate(-50%,-50%)
+      scale(1);
+
+    transition: none;
+  }
+
+}
+/* ==========================================================
+   MEICAT — CHARACTER ZOOM ENTRANCE FIX
+   ========================================================== */
+
+/*
+  Normal resting state.
+  Transition lives on the image itself,
+  just like Braincell.
+*/
+
+.world--meicat .meicat-hero__image {
+  opacity: 1;
+
+  transform:
+    translate(-50%, -50%)
+    scale(1);
+
+  transition:
+    transform 720ms cubic-bezier(.16, 1, .3, 1) 80ms,
+    opacity 500ms ease 80ms;
+
+  will-change:
+    transform,
+    opacity;
+}
+
+
+/* Entering Meicat from the right */
+
+.world--meicat.world-enter-right
+.meicat-hero__image {
+  opacity: 0;
+
+  transform:
+    translate(
+      calc(-50% + 18px),
+      calc(-50% + 18px)
+    )
+    scale(.78);
+}
+
+
+/* Entering Meicat from the left */
+
+.world--meicat.world-enter-left
+.meicat-hero__image {
+  opacity: 0;
+
+  transform:
+    translate(
+      calc(-50% - 18px),
+      calc(-50% + 18px)
+    )
+    scale(.78);
+}
+
+
+/* Animate to full size */
+
+.world--meicat.world-enter-active
+.meicat-hero__image {
+  opacity: 1;
+
+  transform:
+    translate(-50%, -50%)
+    scale(1);
+}
+/* ==========================================================
+   MEICAT — FULL WORLD MOVING PASTEL PINK AURA
+   ========================================================== */
+
+.world--meicat {
+  isolation: isolate;
+}
+
+
+/*
+  One large strawberry-milk aura moving underneath
+  the entire Meicat interface.
+*/
+
+.world--meicat::before {
+  content: "";
+
+  position: absolute;
+  z-index: 0;
+
+  top: -20%;
+  left: 58%;
+
+  width: min(920px, 68vw);
+  height: min(720px, 78vh);
+
+  border-radius: 50%;
+
+  background:
+  radial-gradient(
+    ellipse at center,
+    rgba(190, 224, 248, .42) 0%,
+    rgba(156, 207, 241, .30) 22%,
+    rgba(120, 191, 234, .18) 43%,
+    rgba(126, 183, 225, .075) 61%,
+    transparent 77%
+  );
+
+  filter: blur(44px);
+
+  opacity: .90;
+
+  pointer-events: none;
+
+  transform-origin: center;
+
+  will-change:
+    transform,
+    opacity;
+
+  animation:
+    meicatWorldAuraTravel
+    8s
+    linear
+    infinite;
+}
+
+
+/*
+  Keep the actual website above the moving light.
+*/
+
+.world--meicat .world-inner {
+  position: relative;
+  z-index: 2;
+}
+
+
+/* ==========================================================
+   FULL-PAGE TRAVEL PATH
+   ========================================================== */
+
+@keyframes meicatWorldAuraTravel {
+
+  /* upper-right */
+
+  0% {
+    opacity: .88;
+
+    transform:
+      translate3d(0, 0, 0)
+      scale(1);
+  }
+
+
+  /* right → lower-right */
+
+  18% {
+    opacity: .96;
+
+    transform:
+      translate3d(7vw, 35vh, 0)
+      scale(1.05);
+  }
+
+
+  /* lower-middle */
+
+  36% {
+    opacity: .90;
+
+    transform:
+      translate3d(-22vw, 66vh, 0)
+      scale(.98);
+  }
+
+
+  /* lower-left */
+
+  54% {
+    opacity: .95;
+
+    transform:
+      translate3d(-60vw, 58vh, 0)
+      scale(1.06);
+  }
+
+
+  /* upper-left */
+
+  72% {
+    opacity: .88;
+
+    transform:
+      translate3d(-62vw, 8vh, 0)
+      scale(1);
+  }
+
+
+  /* upper-middle */
+
+  86% {
+    opacity: .94;
+
+    transform:
+      translate3d(-30vw, -8vh, 0)
+      scale(1.04);
+  }
+
+
+  /* back to upper-right */
+
+  100% {
+    opacity: .88;
+
+    transform:
+      translate3d(0, 0, 0)
+      scale(1);
+  }
+
+}
+
+
+/* ==========================================================
+   REDUCED MOTION
+   ========================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+
+  .world--meicat::before {
+    animation: none;
+
+    opacity: .88;
+
+    transform:
+      translate3d(0, 0, 0)
+      scale(1);
+  }
+
+}
+/* ==========================================================
+   MEICAT HERO — FINAL 5 AVATAR STACK
+
+                       1
+                  MAIN / CENTER
+
+               3           2
+
+            5                 4
+
+   #1 preserves the original pre-pyramid hero presentation.
+   ========================================================== */
+
+
+/* ----------------------------------------------------------
+   ART STAGE
+   ---------------------------------------------------------- */
+
+.world--meicat .meicat-hero__art {
+  position: relative;
+  z-index: 2;
+
+  isolation: isolate;
+
+  align-self: stretch;
+
+  margin:
+    -16px
+    18px
+    -12px
+    0;
+
+  overflow: visible;
+
+  border-radius: 30px;
+
+  background:
+    radial-gradient(
+      circle at 50% 58%,
+      rgba(244,169,199,.22),
+      transparent 42%
+    ),
+    rgba(255,242,247,.34);
+}
+
+
+/* ----------------------------------------------------------
+   SHARED AVATAR
+   ---------------------------------------------------------- */
+
+.world--meicat .meicat-avatar {
+  position: absolute;
+
+  top: 50%;
+  left: 43%;
+
+  width: 120%;
+  height: 100%;
+
+  cursor: pointer;
+
+  transform-origin: 50% 55%;
+
+  transition:
+    transform 500ms cubic-bezier(.16,1,.3,1),
+    opacity 300ms ease,
+    filter 350ms ease;
+
+  will-change:
+    transform,
+    opacity;
+
+  outline: none;
+}
+
+
+/*
+   Let each transparent WebP use its natural proportions.
+*/
+
+.world--meicat .meicat-avatar img {
+  display: block;
+
+  width: 100%;
+  height: 100%;
+
+  object-fit: contain;
+  object-position: center;
+
+  pointer-events: none;
+
+  filter:
+    drop-shadow(
+      0 12px 18px
+      rgba(84,40,62,.08)
+    );
+}
+
+
+/* ==========================================================
+   #1 — MAIN MEI
+
+   IMPORTANT:
+   These are the SAME positioning values used by the
+   pre-pyramid main hero:
+       top: 50%
+       left: 43%
+       width: 120%
+       translate(-50%, -50%)
+   ========================================================== */
+
+.world--meicat .meicat-avatar--1 {
+  z-index: 10;
+
+  transform:
+    translate(-50%, -50%)
+    scale(1);
+}
+
+
+/* ==========================================================
+   #3 — MIDDLE LEFT
+   ========================================================== */
+
+.world--meicat .meicat-avatar--3 {
+  z-index: 7;
+
+  transform:
+    translate(-84%, -42%)
+    scale(.64);
+}
+
+
+/* ==========================================================
+   #2 — MIDDLE RIGHT
+   ========================================================== */
+
+.world--meicat .meicat-avatar--2 {
+  z-index: 7;
+
+  transform:
+    translate(-16%, -42%)
+    scale(.64);
+}
+
+
+/* ==========================================================
+   #5 — OUTER LEFT
+   ========================================================== */
+
+.world--meicat .meicat-avatar--5 {
+  z-index: 4;
+
+  transform:
+    translate(-105%, -37%)
+    scale(.50);
+}
+
+
+/* ==========================================================
+   #4 — OUTER RIGHT
+   ========================================================== */
+
+.world--meicat .meicat-avatar--4 {
+  z-index: 4;
+
+  transform:
+    translate(5%, -37%)
+    scale(.50);
+}
+
+
+/* ==========================================================
+   HOVER / KEYBOARD FOCUS
+
+   Same philosophy as #meiart:
+   selected avatar comes above the entire stack.
+   ========================================================== */
+
+.world--meicat .meicat-avatar:hover,
+.world--meicat .meicat-avatar:focus-visible {
+  z-index: 30;
+}
+
+
+/* MAIN MEI */
+
+.world--meicat .meicat-avatar--1:hover,
+.world--meicat .meicat-avatar--1:focus-visible {
+  transform:
+    translate(-50%, -53%)
+    scale(1.035);
+}
+
+
+/* #3 */
+
+.world--meicat .meicat-avatar--3:hover,
+.world--meicat .meicat-avatar--3:focus-visible {
+  transform:
+    translate(-84%, -47%)
+    scale(.70);
+}
+
+
+/* #2 */
+
+.world--meicat .meicat-avatar--2:hover,
+.world--meicat .meicat-avatar--2:focus-visible {
+  transform:
+    translate(-16%, -47%)
+    scale(.70);
+}
+
+
+/* #5 */
+
+.world--meicat .meicat-avatar--5:hover,
+.world--meicat .meicat-avatar--5:focus-visible {
+  transform:
+    translate(-105%, -42%)
+    scale(.57);
+}
+
+
+/* #4 */
+
+.world--meicat .meicat-avatar--4:hover,
+.world--meicat .meicat-avatar--4:focus-visible {
+  transform:
+    translate(5%, -42%)
+    scale(.57);
+}
+
+
+/* ==========================================================
+   STACK DEPTH
+
+   Keep everybody crisp.
+   Do NOT fade or blur the other Meis.
+   ========================================================== */
+
+.world--meicat .meicat-avatar {
+  opacity: 1;
+  filter: none;
+}
+
+
+/* ==========================================================
+   MEICAT WORLD ENTRANCE
+
+   Entire avatar composition follows the existing hero
+   entrance rather than individually flying everywhere.
+   ========================================================== */
+
+.world--meicat .meicat-hero__art {
+  transition:
+    transform 720ms cubic-bezier(.16,1,.3,1) 80ms,
+    opacity 500ms ease 80ms;
+
+  will-change:
+    transform,
+    opacity;
+}
+
+.world--meicat.world-enter-right .meicat-hero__art {
+  opacity: 0;
+
+  transform:
+    translate(18px,18px)
+    scale(.90);
+}
+
+.world--meicat.world-enter-left .meicat-hero__art {
+  opacity: 0;
+
+  transform:
+    translate(-18px,18px)
+    scale(.90);
+}
+
+.world--meicat.world-enter-active .meicat-hero__art {
+  opacity: 1;
+
+  transform:
+    translate(0,0)
+    scale(1);
+}
+
+
+/* ==========================================================
+   REDUCED MOTION
+   ========================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+
+  .world--meicat .meicat-hero__art,
+  .world--meicat .meicat-avatar {
+    transition: none;
+  }
+
+}
+/* ==========================================================
+   MEICAT HERO — DECORATIVE PINK DIVIDER
+   Sits behind Main Mei, above background avatars
+   ========================================================== */
+
+.world--meicat .meicat-hero__art::after {
+  content: "";
+
+  position: absolute;
+  z-index: 8;
+
+  /* longer — reaches behind white-dress Mei */
+  left: -14%;
+  right: -0%;
+
+  /* higher */
+  bottom: 9%;
+
+  /* thicker */
+  height: 6px;
+
+  border-radius: 999px;
+
+  background:
+    linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba(233,110,167,.40) 5%,
+      #e96ea7 13%,
+      #f3a9c8 48%,
+      #e96ea7 86%,
+      rgba(233,110,167,.40) 95%,
+      transparent 100%
+    );
+
+  box-shadow:
+    0 2px 9px rgba(233,110,167,.20);
+
+  pointer-events: none;
+}
+/* ==========================================================
+   MEICAT HERO — MAIN MEI HOVER ONLY
+   ========================================================== */
+
+/* Background Meis are decorative only */
+.world--meicat .meicat-avatar--2,
+.world--meicat .meicat-avatar--3,
+.world--meicat .meicat-avatar--4,
+.world--meicat .meicat-avatar--5 {
+  pointer-events: none !important;
+}
+
+/* Their images must not capture the mouse either */
+.world--meicat .meicat-avatar--2 img,
+.world--meicat .meicat-avatar--3 img,
+.world--meicat .meicat-avatar--4 img,
+.world--meicat .meicat-avatar--5 img {
+  pointer-events: none !important;
+  cursor: default;
+}
+
+/* Only Main Mei is interactive */
+.world--meicat .meicat-avatar--1 {
+  pointer-events: auto !important;
+  cursor: pointer;
+}
+
+/* ==========================================================
+   MEICAT — MOBILE LAYOUT
+   ========================================================== */
+
+@media (max-width: 560px) {
+
+  /* --------------------------------------------------------
+     PAGE / WORLD
+     -------------------------------------------------------- */
+
+  html,
+  body {
+    overflow-x: hidden;
+    overflow-y: auto;
+  }
+
+  .world--meicat {
+    min-height: 100vh;
+    height: auto;
+    overflow: visible;
+  }
+
+  .world--meicat .world-inner {
+    width: calc(100% - 28px);
+    min-height: auto;
+
+    margin: 0 auto;
+    padding:
+      78px
+      0
+      60px;
+
+    overflow: visible;
+  }
+
+
+  /* --------------------------------------------------------
+     HERO
+     Desktop = side-by-side
+     Mobile = copy first, artwork underneath
+     -------------------------------------------------------- */
+
+  .world--meicat .meicat-hero {
+    display: flex;
+    flex-direction: column;
+
+    min-height: 0;
+    height: auto;
+
+    padding:
+      26px
+      20px
+      0;
+
+    overflow: visible;
+
+    border-radius: 26px;
+  }
+
+
+  /* --------------------------------------------------------
+     HERO COPY
+     -------------------------------------------------------- */
+
+  .world--meicat .meicat-hero__copy {
+    position: relative;
+    z-index: 20;
+
+    width: 100%;
+
+    padding: 0;
+
+    text-align: center;
+    align-items: center;
+  }
+
+  .world--meicat .meicat-hero__copy h1 {
+    font-size: clamp(46px, 15vw, 66px);
+    line-height: .92;
+  }
+
+  .world--meicat .meicat-hero__eyebrow {
+    text-align: center;
+  }
+
+  .world--meicat .meicat-hero__roles {
+    justify-content: center;
+    text-align: center;
+  }
+
+  .world--meicat .meicat-hero__tagline {
+    text-align: center;
+  }
+
+
+  /* --------------------------------------------------------
+     AVATAR STAGE
+
+     Give the five characters their OWN space.
+     -------------------------------------------------------- */
+
+  .world--meicat .meicat-hero__art {
+    position: relative;
+
+    width: 100%;
+    height: 180px;
+
+    flex: 0 0 180px;
+
+    margin: 0 0 -87px;
+
+    overflow: visible;
+
+    background: transparent;
+  }
+
+
+  /* --------------------------------------------------------
+     MOBILE AVATAR BASE
+
+     Keep desktop rules intact.
+     Only change the mobile coordinate system.
+     -------------------------------------------------------- */
+
+  .world--meicat .meicat-avatar {
+  position: absolute;
+
+  top: auto;
+  left: auto;
+  right: auto;
+
+  width: auto;
+  height: auto;
+
+  margin: 0;
+
+  transform: none;
+  transform-origin: center bottom;
+    }
+
+    .world--meicat .meicat-avatar img {
+  display: block;
+
+  width: 100%;
+  height: 100%;
+
+  object-fit: contain;
+  object-position: center bottom;
+    }
+
+  /* Mobile — avatars are display-only */
+  .world--meicat .meicat-avatar,
+  .world--meicat .meicat-avatar img {
+    pointer-events: none !important;
+    cursor: default;
+  }
+
+
+  /* #1 — MAIN MEI */
+.world--meicat .meicat-avatar--1 {
+  z-index: 10;
+
+  width: 390px;
+  height: 390px;
+
+  left: 50%;
+  bottom: 112px;
+
+  transform: translateX(-50%);
+}
+
+
+/* #3 — BACK LEFT */
+.world--meicat .meicat-avatar--3 {
+  z-index: 7;
+
+  width: 310px;
+  height: 310px;
+
+  left: -45%;
+  bottom: 110px;
+
+  transform: none;
+}
+
+
+/* #2 — BACK RIGHT */
+.world--meicat .meicat-avatar--2 {
+  z-index: 7;
+
+  width: 310px;
+  height: 310px;
+
+  left: auto;
+  right: -40%;
+  bottom: 110px;
+
+  transform: none;
+}
+
+
+/* #5 — FAR BACK LEFT */
+.world--meicat .meicat-avatar--5 {
+  z-index: 4;
+
+  width: 260px;
+  height: 260px;
+
+  left: -60%;
+  bottom: 108px;
+
+  transform: none;
+}
+
+
+/* #4 — FAR BACK RIGHT */
+.world--meicat .meicat-avatar--4 {
+  z-index: 4;
+
+  width: 260px;
+  height: 260px;
+
+  left: auto;
+  right: -55%;
+  bottom: 108px;
+
+  transform: none;
+}
+
+  /* --------------------------------------------------------
+     PINK DIVIDER
+     -------------------------------------------------------- */
+
+  .world--meicat .meicat-hero__art::after {
+    left: -7%;
+    right: -7%;
+
+    bottom: 108px;
+
+    height: 5px;
+  }
+
+
+  /* --------------------------------------------------------
+     LOWER CONTENT
+     Everything becomes vertical.
+     -------------------------------------------------------- */
+
+  .world--meicat .meicat-lower {
+    display: flex;
+    flex-direction: column;
+
+    height: auto;
+    min-height: 0;
+
+    gap: 18px;
+    margin-top: 18px;
+  }
+
+
+  /* --------------------------------------------------------
+     GIFTERS
+     -------------------------------------------------------- */
+
+  .world--meicat .meicat-gifters__grid {
+    grid-template-columns: 1fr;
+
+    gap: 12px;
+  }
+
+
+  /* --------------------------------------------------------
+     TUTORIALS
+     -------------------------------------------------------- */
+
+  .world--meicat .meicat-tutorials__grid {
+    grid-template-columns: 1fr;
+
+    gap: 14px;
+  }
+
+
+  /* --------------------------------------------------------
+     CARDS
+     -------------------------------------------------------- */
+
+  .world--meicat .meicat-card {
+    height: auto;
+    min-height: 0;
+  }
+
+}
