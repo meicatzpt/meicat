@@ -28,6 +28,8 @@
   const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_2Z9IaBHJolcfAoHwZMiUJQ_jg-aSDON";
   const SUBMIT_GAME_ENDPOINT =
     `${SUPABASE_URL}/functions/v1/submit-arcade-game`;
+  const GET_PLAYER_ENDPOINT =
+    `${SUPABASE_URL}/functions/v1/get-arcade-player`;
 
   const PIECES = [
     { level: 1, radius: 16, score: 2, fill: "#ef9cba", image: null },
@@ -65,6 +67,14 @@
   const usernameError = document.getElementById("usernameError");
   const usernameDisplay = document.getElementById("usernameDisplay");
   const changeUsernameButton = document.getElementById("changeUsername");
+  const headerMeiowPoints = document.getElementById("headerMeiowPoints");
+  const openShopButton = document.getElementById("openShop");
+  const shopOverlay = document.getElementById("shopOverlay");
+  const closeShopButton = document.getElementById("closeShop");
+  const shopBackdrop = shopOverlay.querySelector(".shop-overlay__backdrop");
+  const shopMeiowPoints = document.getElementById("shopMeiowPoints");
+  const shopStatus = document.getElementById("shopStatus");
+  const shopRewards = document.getElementById("shopRewards");
   const devButtons = document.querySelectorAll("[data-spawn-level], [data-clear-board]");
 
   const engine = Engine.create({
@@ -94,6 +104,10 @@
   let gameRunId = 0;
   let submittedRunId = null;
   let leaderboardRequestId = 0;
+  let currentMeiowPoints = null;
+  let shopWasGameplayActive = false;
+  let shopReturnFocus = null;
+  let shopRewardsRequestId = 0;
 
   /* ==========================================================
      USERNAME STATE
@@ -150,8 +164,18 @@
     usernameDisplay.textContent = `@${currentUsername}`;
   }
 
+  function updateMeiowPointsDisplay() {
+    const balance = currentMeiowPoints == null
+      ? "—"
+      : Number(currentMeiowPoints).toLocaleString();
+
+    headerMeiowPoints.textContent = balance;
+    shopMeiowPoints.textContent = `${balance} MEIOW POINTS`;
+  }
+
   function setGameplayAccess(enabled) {
     gameplayStarted = enabled;
+    openShopButton.disabled = !enabled;
     devButtons.forEach((button) => {
       button.disabled = !enabled;
     });
@@ -177,10 +201,13 @@
 
     currentUsername = normalizeUsername(value);
     saveUsername(currentUsername);
+    currentMeiowPoints = null;
     updateUsernameDisplay();
+    updateMeiowPointsDisplay();
     usernameGate.classList.remove("is-open");
     usernameGate.setAttribute("aria-hidden", "true");
     setGameplayAccess(true);
+    loadCurrentPlayer();
     gameStatus.textContent = "Move, then tap or click to drop.";
     canvas.focus({ preventScroll: true });
     return true;
@@ -256,6 +283,165 @@
     }
   }
 
+  async function loadCurrentPlayer() {
+    const requestedUsername = currentUsername;
+
+    if (!requestedUsername) {
+      currentMeiowPoints = null;
+      updateMeiowPointsDisplay();
+      return;
+    }
+
+    try {
+      const response = await fetch(GET_PLAYER_ENDPOINT, {
+        method: "POST",
+        headers: {
+          ...supabaseHeaders,
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          username: requestedUsername
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error(`Player request failed: ${response.status}`);
+      }
+
+      const result = await response.json();
+
+      if (
+        requestedUsername !== currentUsername ||
+        result.ok !== true ||
+        !result.player ||
+        result.player.meiowPoints == null
+      ) {
+        return;
+      }
+
+      currentMeiowPoints = result.player.meiowPoints;
+      updateMeiowPointsDisplay();
+    } catch (error) {
+      if (requestedUsername !== currentUsername) {
+        return;
+      }
+
+      currentMeiowPoints = null;
+      updateMeiowPointsDisplay();
+      shopStatus.textContent = "Balance unavailable.";
+      console.error("Arcade player load failed:", error);
+    }
+  }
+
+  function renderShopRewards(rewards) {
+    shopRewards.replaceChildren();
+
+    rewards.forEach((reward) => {
+      const card = document.createElement("article");
+      const image = document.createElement("div");
+      const imageLabel = document.createElement("span");
+      const title = document.createElement("h3");
+      const cost = document.createElement("p");
+      const costValue = document.createElement("strong");
+      const costLabel = document.createElement("span");
+      const stock = document.createElement("p");
+      const buy = document.createElement("button");
+
+      card.className = "reward-card";
+      image.className = "reward-image";
+      imageLabel.textContent = "ZEM\nGIFT";
+      image.append(imageLabel);
+      title.textContent = reward.name;
+      cost.className = "reward-cost";
+      costValue.textContent = Number(reward.cost).toLocaleString();
+      costLabel.textContent = " MEIOW POINTS";
+      cost.append(costValue, costLabel);
+      stock.className = "reward-stock";
+
+      if (reward.stock === 0) {
+        stock.textContent = "OUT OF STOCK";
+      } else if (reward.stock != null) {
+        stock.textContent = `${Number(reward.stock).toLocaleString()} LEFT`;
+      }
+
+      buy.className = "reward-buy";
+      buy.type = "button";
+      buy.disabled = true;
+      buy.textContent = reward.stock === 0 ? "OUT OF STOCK" : "BUY";
+      card.append(image, title, cost, stock, buy);
+      shopRewards.append(card);
+    });
+  }
+
+  async function loadShopRewards() {
+    const requestId = ++shopRewardsRequestId;
+    shopStatus.textContent = "Loading...";
+
+    try {
+      const response = await fetch(
+        `${SUPABASE_URL}/rest/v1/arcade_rewards?select=id,slug,name,description,image_url,cost,stock,sort_order&is_active=eq.true&order=sort_order.asc`,
+        {
+          headers: supabaseHeaders
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error(`Shop rewards request failed: ${response.status}`);
+      }
+
+      const rewards = await response.json();
+
+      if (requestId !== shopRewardsRequestId) {
+        return;
+      }
+
+      renderShopRewards(Array.isArray(rewards) ? rewards : []);
+      shopStatus.textContent = rewards.length ? "" : "No rewards available right now.";
+    } catch (error) {
+      if (requestId !== shopRewardsRequestId) {
+        return;
+      }
+
+      shopRewards.replaceChildren();
+      shopStatus.textContent = "Shop unavailable right now.";
+      console.error("Arcade shop rewards load failed:", error);
+    }
+  }
+
+  function openShop() {
+    if (!gameplayStarted || usernameGate.classList.contains("is-open")) {
+      return;
+    }
+
+    shopWasGameplayActive = gameplayStarted;
+    shopReturnFocus = document.activeElement;
+    setGameplayAccess(false);
+    document.body.style.overflow = "hidden";
+    shopOverlay.classList.add("is-open");
+    shopOverlay.setAttribute("aria-hidden", "false");
+    loadShopRewards();
+    loadCurrentPlayer();
+    closeShopButton.focus();
+  }
+
+  function closeShop() {
+    shopOverlay.classList.remove("is-open");
+    shopOverlay.setAttribute("aria-hidden", "true");
+    document.body.style.overflow = "";
+
+    if (shopWasGameplayActive && !gameOver && currentUsername) {
+      setGameplayAccess(true);
+    }
+
+    if (shopReturnFocus && typeof shopReturnFocus.focus === "function") {
+      shopReturnFocus.focus({ preventScroll: true });
+    } else {
+      openShopButton.focus({ preventScroll: true });
+    }
+
+    shopReturnFocus = null;
+  }
+
   async function submitCompletedGame(runId, username, finalRunScore) {
     if (submittedRunId === runId) {
       return;
@@ -299,6 +485,8 @@
       }
 
       const player = result.player || {};
+      currentMeiowPoints = player.meiowPoints;
+      updateMeiowPointsDisplay();
       submissionStatus.textContent =
         `+${Number(player.pointsEarned || 0).toLocaleString()} MEIOW POINTS`;
       resultTotals.textContent =
@@ -664,6 +852,20 @@
 
   document.querySelector("[data-clear-board]").addEventListener("click", clearBoard);
 
+  openShopButton.addEventListener("click", openShop);
+  closeShopButton.addEventListener("click", closeShop);
+  shopBackdrop.addEventListener("click", closeShop);
+
+  document.addEventListener("keydown", (event) => {
+    if (event.key !== "Escape") {
+      return;
+    }
+
+    if (shopOverlay.classList.contains("is-open")) {
+      closeShop();
+    }
+  });
+
   usernameForm.addEventListener("submit", (event) => {
     event.preventDefault();
     acceptUsername(usernameInput.value);
@@ -790,10 +992,12 @@
 
   currentUsername = readSavedUsername();
   updateUsernameDisplay();
+  updateMeiowPointsDisplay();
 
   if (currentUsername) {
     setGameplayAccess(true);
     gameStatus.textContent = "Move, then tap or click to drop.";
+    loadCurrentPlayer();
   } else {
     openUsernameGate();
   }

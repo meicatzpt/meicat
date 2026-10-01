@@ -69,6 +69,46 @@ button {
   cursor: pointer;
 }
 
+.arcade-shop-tools {
+  display: flex;
+  align-items: flex-end;
+  gap: 10px;
+}
+
+.meiow-balance {
+  display: grid;
+  gap: 2px;
+  color: #a77d8e;
+  font-size: 8px;
+  font-weight: 850;
+  letter-spacing: .1em;
+  text-align: right;
+}
+
+.meiow-balance strong {
+  color: #604653;
+  font-size: 16px;
+  line-height: 1;
+}
+
+.arcade-shop-tools button {
+  min-height: 30px;
+  padding: 6px 10px;
+  border: 1px solid rgba(215, 93, 145, .3);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, .64);
+  color: #d75d91;
+  font-size: 10px;
+  font-weight: 850;
+  letter-spacing: .06em;
+  cursor: pointer;
+}
+
+.arcade-shop-tools button:disabled {
+  opacity: .4;
+  cursor: not-allowed;
+}
+
 .eyebrow {
   margin: 0 0 3px;
   color: #d75d91;
@@ -332,6 +372,179 @@ h1 {
   font-size: 10px;
 }
 
+.shop-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 30;
+  display: grid;
+  place-items: center;
+  padding: 16px;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 180ms ease, visibility 180ms ease;
+}
+
+.shop-overlay.is-open {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+
+.shop-overlay__backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(57, 29, 48, .4);
+  backdrop-filter: blur(7px);
+}
+
+.shop-panel {
+  position: relative;
+  z-index: 1;
+  width: min(100%, 760px);
+  max-height: min(760px, calc(100vh - 32px));
+  overflow: auto;
+  padding: 26px;
+  border: 1px solid rgba(255, 255, 255, .9);
+  border-radius: 24px;
+  background: rgba(255, 250, 251, .96);
+  box-shadow: 0 28px 80px rgba(78, 44, 59, .22);
+}
+
+.shop-close {
+  position: absolute;
+  top: 10px;
+  right: 12px;
+  width: 34px;
+  height: 34px;
+  border: 0;
+  background: transparent;
+  color: #80616e;
+  font-size: 25px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.shop-panel h2 {
+  margin: 3px 0 14px;
+  color: #604653;
+  font-size: 32px;
+  line-height: .95;
+  letter-spacing: -.05em;
+}
+
+.shop-balance {
+  display: inline-grid;
+  gap: 3px;
+  margin-bottom: 12px;
+  padding: 9px 12px;
+  border-radius: 12px;
+  background: rgba(241, 184, 210, .22);
+}
+
+.shop-balance span {
+  color: #a77d8e;
+  font-size: 9px;
+  font-weight: 850;
+  letter-spacing: .12em;
+}
+
+.shop-balance strong {
+  color: #d75d91;
+  font-size: 16px;
+}
+
+.shop-description {
+  margin: 0 0 16px;
+  color: #80616e;
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+.shop-description a {
+  color: #d75d91;
+  font-weight: 800;
+}
+
+.shop-status {
+  min-height: 16px;
+  margin-bottom: 10px;
+  color: #a77d8e;
+  font-size: 11px;
+}
+
+.shop-rewards {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.reward-card {
+  display: grid;
+  gap: 8px;
+  padding: 12px;
+  border: 1px solid rgba(255, 255, 255, .84);
+  border-radius: 16px;
+  background: rgba(255, 255, 255, .48);
+}
+
+.reward-image {
+  display: grid;
+  place-items: center;
+  min-height: 92px;
+  border-radius: 12px;
+  background: linear-gradient(145deg, #f8c7dc, #e9b8d6);
+  color: #fff;
+  font-size: 15px;
+  font-weight: 900;
+  letter-spacing: .08em;
+  text-align: center;
+}
+
+.reward-image span {
+  display: block;
+  font-size: 10px;
+  letter-spacing: .16em;
+}
+
+.reward-card h3 {
+  min-height: 30px;
+  margin: 0;
+  color: #604653;
+  font-size: 13px;
+  line-height: 1.15;
+}
+
+.reward-cost,
+.reward-stock {
+  margin: 0;
+  color: #80616e;
+  font-size: 10px;
+}
+
+.reward-cost strong {
+  display: block;
+  color: #d75d91;
+  font-size: 15px;
+}
+
+.reward-buy {
+  width: 100%;
+  min-height: 34px;
+  border: 1px solid rgba(151, 93, 119, .2);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, .72);
+  color: #80616e;
+  font-size: 10px;
+  font-weight: 850;
+  letter-spacing: .08em;
+}
+
+.reward-buy:disabled {
+  opacity: .62;
+  cursor: not-allowed;
+}
+
 .username-gate {
   position: fixed;
   inset: 0;
@@ -513,16 +726,139 @@ h1 {
   }
 }
 
-@media (max-width: 430px) {
+@media (max-width: 699px) {
+  .arcade-page {
+    padding-right: 14px;
+    padding-left: 14px;
+  }
+
+  .arcade-shell,
+  .arcade-content,
+  .game-column,
+  .dev-tools {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+  }
+
   .arcade-header {
-    align-items: flex-start;
-    flex-wrap: wrap;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: start;
+    gap: 10px 12px;
+  }
+
+  .arcade-header > :first-child {
+    grid-column: 1 / -1;
   }
 
   .arcade-account {
-    order: 3;
-    width: 100%;
+    display: flex;
+    align-items: center;
     justify-items: start;
+    gap: 8px;
+    min-width: 0;
     margin-left: 0;
+  }
+
+  .arcade-account span {
+    max-width: 140px;
+  }
+
+  .arcade-shop-tools {
+    justify-content: flex-end;
+    min-width: 0;
+  }
+
+  .hud {
+    grid-column: 1 / -1;
+    justify-content: space-between;
+    width: 100%;
+    gap: 12px;
+  }
+
+  .hud-item {
+    justify-items: start;
+  }
+
+  .hud-next {
+    justify-items: end;
+  }
+
+  .game-frame {
+    width: min(100%, 360px);
+    max-width: 100%;
+  }
+
+  .leaderboard-panel {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    padding: 18px;
+  }
+
+  .leaderboard-list li {
+    grid-template-columns: 20px minmax(0, 1fr) max-content;
+    min-width: 0;
+  }
+
+  .leaderboard-list strong {
+    min-width: 0;
+  }
+
+  .dev-buttons {
+    width: 100%;
+  }
+
+  .shop-panel {
+    width: calc(100vw - 28px);
+    max-width: calc(100vw - 28px);
+  }
+
+  .shop-rewards {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 430px) {
+  .arcade-header {
+    gap: 8px 10px;
+  }
+
+  .arcade-account {
+    gap: 6px;
+  }
+
+  .arcade-account span {
+    max-width: 112px;
+  }
+
+  .arcade-shop-tools {
+    gap: 7px;
+  }
+
+  .meiow-balance {
+    font-size: 7px;
+  }
+
+  .meiow-balance strong {
+    font-size: 15px;
+  }
+
+  .arcade-shop-tools button {
+    padding-right: 9px;
+    padding-left: 9px;
+  }
+
+  .hud {
+    margin-top: 2px;
+  }
+
+  .leaderboard-panel {
+    padding: 16px;
+  }
+
+  .shop-panel {
+    padding: 24px 16px;
   }
 }
