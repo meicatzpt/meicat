@@ -23,6 +23,16 @@ document.addEventListener("DOMContentLoaded", () => {
   const homeButton =
     document.getElementById("homeButton");
 
+  const mainMeiAvatar =
+    document.querySelector(".world--meicat .meicat-avatar--1");
+
+  mainMeiAvatar.addEventListener(
+    "click",
+    () => {
+      window.location.href = "arcade/";
+    }
+  );
+
   const braincellDownloadLinks =
     document.querySelectorAll(
       ".braincell-download-link"

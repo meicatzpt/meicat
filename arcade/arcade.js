@@ -36,18 +36,35 @@
     `${SUPABASE_URL}/functions/v1/redeem-arcade-reward`;
 
   const PIECES = [
-    { level: 1, radius: 16, score: 2, fill: "#ef9cba", image: null },
-    { level: 2, radius: 22, score: 5, fill: "#eaa1df", image: null },
-    { level: 3, radius: 29, score: 10, fill: "#c79ee8", image: null },
-    { level: 4, radius: 37, score: 18, fill: "#9f9ee8", image: null },
-    { level: 5, radius: 46, score: 30, fill: "#8ebde3", image: null },
-    { level: 6, radius: 57, score: 48, fill: "#83d0cf", image: null },
-    { level: 7, radius: 69, score: 75, fill: "#91d38e", image: null },
-    { level: 8, radius: 82, score: 112, fill: "#c8d77c", image: null },
-    { level: 9, radius: 96, score: 165, fill: "#f0c878", image: null },
-    { level: 10, radius: 111, score: 240, fill: "#efa36f", image: null },
-    { level: 11, radius: 127, score: 350, fill: "#e98986", image: null }
+    { level: 1, radius: 16, score: 2, fill: "#ef9cba", image: "assets/pieces/piece-01.webp" },
+    { level: 2, radius: 22, score: 5, fill: "#eaa1df", image: "assets/pieces/piece-02.webp" },
+    { level: 3, radius: 29, score: 10, fill: "#c79ee8", image: "assets/pieces/piece-03.webp" },
+    { level: 4, radius: 37, score: 18, fill: "#9f9ee8", image: "assets/pieces/piece-04.webp" },
+    { level: 5, radius: 46, score: 30, fill: "#8ebde3", image: "assets/pieces/piece-05.webp" },
+    { level: 6, radius: 57, score: 48, fill: "#83d0cf", image: "assets/pieces/piece-06.webp" },
+    { level: 7, radius: 69, score: 75, fill: "#91d38e", image: "assets/pieces/piece-07.webp" },
+    { level: 8, radius: 82, score: 112, fill: "#c8d77c", image: "assets/pieces/piece-08.webp" },
+    { level: 9, radius: 96, score: 165, fill: "#f0c878", image: "assets/pieces/piece-09.webp" },
+    { level: 10, radius: 111, score: 240, fill: "#efa36f", image: "assets/pieces/piece-10.webp" },
+    { level: 11, radius: 127, score: 350, fill: "#e98986", image: "assets/pieces/piece-11.webp" }
   ];
+
+  const PIECE_IMAGES = new Map(
+    PIECES.map((piece) => {
+      const image = new Image();
+      image.src = piece.image;
+      return [piece.level, image];
+    })
+  );
+
+  const REWARD_IMAGES = {
+    "3-zem-gift": "assets/rewards/reward-03-zem.webp",
+    "5-zem-gift": "assets/rewards/reward-05-zem.webp",
+    "10-zem-gift": "assets/rewards/reward-10-zem.webp",
+    "18-zem-gift": "assets/rewards/reward-18-zem.webp",
+    "23-zem-gift": "assets/rewards/reward-23-zem.webp",
+    "30-zem-gift": "assets/rewards/reward-30-zem.webp"
+  };
 
   /* ==========================================================
      DOM AND STATE
@@ -113,7 +130,6 @@
   const requestedUsername = document.getElementById("requestedUsername");
   const fulfillmentBadge = document.getElementById("fulfillmentBadge");
   const backFromRequestedButton = document.getElementById("backFromRequested");
-  const devButtons = document.querySelectorAll("[data-spawn-level], [data-clear-board]");
 
   const engine = Engine.create({
     enableSleeping: true
@@ -224,9 +240,6 @@
   function setGameplayAccess(enabled) {
     gameplayStarted = enabled;
     openShopButton.disabled = !enabled;
-    devButtons.forEach((button) => {
-      button.disabled = !enabled;
-    });
   }
 
   function openUsernameGate() {
@@ -389,21 +402,31 @@
     }
   }
 
-  function rewardImageElement(imageUrl, className = "reward-image") {
+  function rewardImageElement(reward) {
+    const imageUrl = reward && REWARD_IMAGES[reward.slug];
+    const visual = document.createElement("div");
+    visual.className = "reward-image";
+
     if (imageUrl) {
+      visual.classList.add("has-art");
       const image = document.createElement("img");
-      image.className = className;
       image.src = imageUrl;
       image.alt = "";
-      return image;
+      image.onerror = () => {
+        visual.replaceChildren(rewardPlaceholderLabel());
+      };
+      visual.append(image);
+      return visual;
     }
 
-    const placeholder = document.createElement("div");
+    visual.append(rewardPlaceholderLabel());
+    return visual;
+  }
+
+  function rewardPlaceholderLabel() {
     const label = document.createElement("span");
-    placeholder.className = className;
     label.textContent = "ZEM\nGIFT";
-    placeholder.append(label);
-    return placeholder;
+    return label;
   }
 
   function rewardEligibility(reward) {
@@ -455,7 +478,7 @@
       const buy = document.createElement("button");
 
       card.className = "reward-card";
-      const image = rewardImageElement(reward.image_url);
+      const image = rewardImageElement(reward);
       title.textContent = reward.name;
       cost.className = "reward-cost";
       costValue.textContent = Number(reward.cost).toLocaleString();
@@ -499,7 +522,7 @@
     shopRedeemConfirmation.hidden = true;
     shopRedeemRequested.hidden = true;
     confirmationRewardImage.replaceChildren(
-      rewardImageElement(reward.image_url)
+      rewardImageElement(reward)
     );
     confirmationRewardName.textContent = reward.name;
     confirmationCost.textContent = `${Number(reward.cost).toLocaleString()} MP`;
@@ -567,16 +590,9 @@
     shopRedeemRequested.hidden = true;
     purchaseGreeting.textContent = `CONGRATULATIONS, ${displayUsername(purchase.username)}!`;
     successRewardImage.replaceChildren();
-    if (selectedReward && selectedReward.image_url) {
-      const image = document.createElement("img");
-      image.src = selectedReward.image_url;
-      image.alt = "";
-      successRewardImage.append(image);
-    } else {
-      const label = document.createElement("span");
-      label.textContent = "ZEM\nGIFT";
-      successRewardImage.append(label);
-    }
+    successRewardImage.append(
+      rewardImageElement(selectedReward)
+    );
     successRewardName.textContent = purchase.rewardName;
     redemptionCode.textContent = purchase.redemptionCode;
     successBalance.textContent = `${Number(purchase.remainingMeiowPoints).toLocaleString()} MEIOW POINTS LEFT`;
@@ -603,16 +619,9 @@
 
   function renderRedeemRewardImage(container) {
     container.replaceChildren();
-    if (selectedReward && selectedReward.image_url) {
-      const image = document.createElement("img");
-      image.src = selectedReward.image_url;
-      image.alt = "";
-      container.append(image);
-    } else {
-      const label = document.createElement("span");
-      label.textContent = "ZEM\nGIFT";
-      container.append(label);
-    }
+    container.append(
+      rewardImageElement(selectedReward)
+    );
   }
 
   function showRedeemConfirmation() {
@@ -1320,23 +1329,6 @@
 
   tryAgainButton.addEventListener("click", resetGame);
 
-  document.querySelectorAll("[data-spawn-level]").forEach((button) => {
-    button.addEventListener("click", () => {
-      if (gameOver) {
-        return;
-      }
-
-      const level = Number(button.dataset.spawnLevel);
-      const radius = pieceDefinition(level).radius;
-      const minX = radius + 4;
-      const maxX = WORLD_WIDTH - radius - 4;
-      const x = minX + Math.random() * Math.max(0, maxX - minX);
-      createPiece(level, x, radius + 8);
-    });
-  });
-
-  document.querySelector("[data-clear-board]").addEventListener("click", clearBoard);
-
   openShopButton.addEventListener("click", openShop);
   closeShopButton.addEventListener("click", closeShop);
   shopBackdrop.addEventListener("click", closeShop);
@@ -1399,6 +1391,20 @@
     context.translate(body.position.x, body.position.y);
     context.rotate(body.angle);
 
+    const pieceImage = PIECE_IMAGES.get(level);
+
+    if (pieceImage && pieceImage.complete && pieceImage.naturalWidth > 0) {
+      context.drawImage(
+        pieceImage,
+        -radius,
+        -radius,
+        radius * 2,
+        radius * 2
+      );
+      context.restore();
+      return;
+    }
+
     const gradient = context.createRadialGradient(
       -radius * 0.34,
       -radius * 0.38,
@@ -1442,7 +1448,7 @@
     context.beginPath();
     context.moveTo(x, y + definition.radius + 8);
     context.lineTo(x, WORLD_HEIGHT);
-    context.strokeStyle = "rgba(255,255,255,.28)";
+    context.strokeStyle = "rgba(184,63,115,.32)";
     context.stroke();
     context.setLineDash([]);
     context.restore();
@@ -1459,15 +1465,15 @@
     context.clearRect(0, 0, WORLD_WIDTH, WORLD_HEIGHT);
 
     const background = context.createLinearGradient(0, 0, 0, WORLD_HEIGHT);
-    background.addColorStop(0, "#4a285e");
-    background.addColorStop(.48, "#3b244f");
-    background.addColorStop(1, "#241b36");
+    background.addColorStop(0, "#fffdf9");
+    background.addColorStop(.48, "#fff8f1");
+    background.addColorStop(1, "#fff3e9");
     context.fillStyle = background;
     context.fillRect(0, 0, WORLD_WIDTH, WORLD_HEIGHT);
 
-    context.fillStyle = "rgba(255,255,255,.035)";
+    context.fillStyle = "rgba(233,110,167,.08)";
     context.fillRect(0, DANGER_Y, WORLD_WIDTH, 2);
-    context.strokeStyle = "rgba(255,184,157,.82)";
+    context.strokeStyle = "#d94d89";
     context.setLineDash([8, 7]);
     context.beginPath();
     context.moveTo(0, DANGER_Y);
@@ -1475,7 +1481,7 @@
     context.stroke();
     context.setLineDash([]);
 
-    context.fillStyle = "rgba(255,223,210,.72)";
+    context.fillStyle = "#b83f73";
     context.font = "700 9px ui-sans-serif, sans-serif";
     context.fillText("DANGER", 12, DANGER_Y - 8);
 
