@@ -19,10 +19,6 @@ body {
     #f8eef2;
 }
 
-button {
-  font: inherit;
-}
-
 .arcade-page {
   min-height: 100vh;
   padding: 24px 14px 42px;
@@ -94,14 +90,36 @@ button {
 .arcade-shop-tools button {
   min-height: 30px;
   padding: 6px 10px;
-  border: 1px solid rgba(215, 93, 145, .3);
+  border: 1px solid #d75d91;
   border-radius: 10px;
-  background: rgba(255, 255, 255, .64);
-  color: #d75d91;
+  background: #d75d91;
+  color: #fff;
   font-size: 10px;
   font-weight: 850;
   letter-spacing: .06em;
   cursor: pointer;
+  box-shadow: 0 4px 10px rgba(215, 93, 145, .16);
+  transition:
+    background 160ms ease,
+    box-shadow 160ms ease,
+    transform 160ms ease;
+}
+
+.arcade-shop-tools button:not(:disabled):hover {
+  background: #c94f85;
+  box-shadow: 0 6px 13px rgba(201, 79, 133, .22);
+  transform: translateY(-1px);
+}
+
+.arcade-shop-tools button:not(:disabled):active {
+  background: #c94f85;
+  box-shadow: 0 3px 8px rgba(201, 79, 133, .18);
+  transform: translateY(0);
+}
+
+.arcade-shop-tools button:not(:disabled):focus-visible {
+  outline: 2px solid rgba(215, 93, 145, .48);
+  outline-offset: 3px;
 }
 
 .arcade-shop-tools button:disabled {
@@ -143,12 +161,8 @@ h1 {
   justify-items: end;
 }
 
-.hud-item > span {
-  color: #a77d8e;
-  font-size: 10px;
-  font-weight: 800;
-  letter-spacing: .12em;
-  text-transform: uppercase;
+button {
+  font: inherit;
 }
 
 .hud-item strong {
@@ -507,6 +521,15 @@ h1 {
   letter-spacing: .16em;
 }
 
+.reward-image img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  min-height: 92px;
+  object-fit: contain;
+  border-radius: inherit;
+}
+
 .reward-card h3 {
   min-height: 30px;
   margin: 0;
@@ -543,6 +566,372 @@ h1 {
 .reward-buy:disabled {
   opacity: .62;
   cursor: not-allowed;
+}
+
+.shop-confirmation,
+.shop-success {
+  max-width: 440px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.shop-confirmation {
+  padding: 10px 8px 4px;
+}
+
+.shop-confirmation h3,
+.shop-success h3 {
+  margin: 4px 0 18px;
+  color: #604653;
+  font-size: 30px;
+  line-height: .98;
+  letter-spacing: -.04em;
+}
+
+.confirmation-reward-image {
+  display: grid;
+  place-items: center;
+  width: min(100%, 178px);
+  height: 148px;
+  margin: 0 auto 16px;
+}
+
+.confirmation-reward-image .reward-image {
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  border-radius: 18px;
+  font-size: 25px;
+  box-shadow: 0 14px 26px rgba(129, 72, 101, .12);
+}
+
+.confirmation-reward-image .reward-image span {
+  font-size: 13px;
+}
+
+.shop-confirmation-name {
+  margin: 0 0 20px;
+  color: #604653;
+  font-size: 20px;
+  font-weight: 800;
+}
+
+.purchase-summary {
+  margin: 0 auto;
+  padding: 0;
+  border-top: 1px solid rgba(151, 93, 119, .16);
+  border-bottom: 1px solid rgba(151, 93, 119, .16);
+  text-align: left;
+}
+
+.purchase-summary > div {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 18px;
+  padding: 11px 0;
+}
+
+.purchase-summary dt,
+.purchase-summary dd {
+  margin: 0;
+}
+
+.purchase-summary dt {
+  color: #80616e;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: .07em;
+}
+
+.purchase-summary dd {
+  color: #604653;
+  font-size: 14px;
+  letter-spacing: 0;
+  white-space: nowrap;
+}
+
+.purchase-summary-after {
+  margin-top: 3px;
+  border-top: 1px dashed rgba(151, 93, 119, .22);
+}
+
+.purchase-summary-after dt,
+.purchase-summary-after dd {
+  color: #d75d91;
+}
+
+.shop-confirmation-actions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 22px;
+}
+
+.shop-confirmation-actions button,
+.shop-back {
+  min-height: 48px;
+  padding: 11px 14px;
+  border: 1px solid rgba(215, 93, 145, .3);
+  border-radius: 13px;
+  background: rgba(255, 255, 255, .78);
+  color: #80616e;
+  font-size: 11px;
+  font-weight: 850;
+  letter-spacing: .05em;
+  cursor: pointer;
+}
+
+.shop-confirmation-actions button:last-child {
+  background: #d75d91;
+  color: #fff;
+}
+
+.shop-confirmation-actions button:hover,
+.shop-confirmation-actions button:focus-visible,
+.shop-back:hover,
+.shop-back:focus-visible {
+  border-color: rgba(215, 93, 145, .62);
+  transform: translateY(-1px);
+}
+
+.shop-confirmation-actions button:disabled,
+.shop-back:disabled {
+  opacity: .58;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.shop-purchase-error {
+  min-height: 17px;
+  margin: 12px 0 0;
+  color: #b34564;
+  font-size: 11px;
+}
+
+.shop-success h3 {
+  margin-bottom: 12px;
+  font-size: 22px;
+}
+
+.shop-success-image {
+  width: min(150px, 100%);
+  min-height: 110px;
+  margin: 10px auto;
+}
+
+.shop-success-image img {
+  display: block;
+  width: 100%;
+  min-height: 110px;
+  object-fit: contain;
+  border-radius: inherit;
+}
+
+.shop-success h4 {
+  margin: 0 0 16px;
+  color: #604653;
+  font-size: 18px;
+}
+
+.shop-success code {
+  display: inline-block;
+  max-width: 100%;
+  padding: 8px 12px;
+  overflow-wrap: anywhere;
+  border-radius: 9px;
+  background: rgba(241, 184, 210, .22);
+  color: #d75d91;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.shop-success-balance {
+  margin: 16px 0 12px;
+  color: #d75d91;
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.shop-success .reward-buy {
+  max-width: 150px;
+  margin: 0 auto;
+}
+
+.shop-success-note {
+  margin: 8px 0 16px;
+  color: #80616e;
+  font-size: 10px;
+  line-height: 1.4;
+}
+
+.shop-back {
+  background: rgba(255, 255, 255, .82);
+  color: #604653;
+  border-color: rgba(151, 93, 119, .24);
+}
+
+.shop-success-redeem {
+  margin: 0 auto 10px;
+  border-color: #d75d91;
+  background: #d75d91;
+  color: #fff;
+  box-shadow: 0 5px 12px rgba(215, 93, 145, .16);
+  transition:
+    background 160ms ease,
+    box-shadow 160ms ease,
+    transform 160ms ease;
+}
+
+.shop-success-redeem:hover,
+.shop-success-redeem:focus-visible {
+  border-color: #c94f85;
+  background: #c94f85;
+  box-shadow: 0 7px 15px rgba(201, 79, 133, .22);
+  transform: translateY(-1px);
+}
+
+.shop-success-redeem:focus-visible {
+  outline: 2px solid rgba(215, 93, 145, .48);
+  outline-offset: 3px;
+}
+
+.shop-success .shop-back:hover,
+.shop-success .shop-back:focus-visible {
+  border-color: rgba(215, 93, 145, .34);
+  background: rgba(241, 184, 210, .24);
+  transform: translateY(-1px);
+}
+
+.shop-success .shop-back:focus-visible {
+  outline: 2px solid rgba(151, 93, 119, .32);
+  outline-offset: 3px;
+}
+
+.shop-redeem-confirmation,
+.shop-redeem-requested {
+  max-width: 440px;
+  margin: 0 auto;
+  padding: 10px 8px 4px;
+  text-align: center;
+}
+
+.shop-redeem-confirmation h3,
+.shop-redeem-requested h3 {
+  margin: 4px 0 18px;
+  color: #604653;
+  font-size: 30px;
+  line-height: .98;
+  letter-spacing: -.04em;
+}
+
+.redeem-reward-image {
+  width: min(100%, 178px);
+  height: 148px;
+  min-height: 0;
+  margin: 0 auto 16px;
+  border-radius: 18px;
+  font-size: 25px;
+  box-shadow: 0 14px 26px rgba(129, 72, 101, .12);
+}
+
+.redeem-reward-image span {
+  font-size: 13px;
+}
+
+.shop-redeem-confirmation h4,
+.shop-redeem-requested h4 {
+  margin: 0 0 20px;
+  color: #604653;
+  font-size: 20px;
+}
+
+.redeem-summary {
+  margin: 0 auto 20px;
+  padding: 0;
+  border-top: 1px solid rgba(151, 93, 119, .16);
+  border-bottom: 1px solid rgba(151, 93, 119, .16);
+  text-align: left;
+}
+
+.redeem-summary > div {
+  display: flex;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 11px 0;
+}
+
+.redeem-summary dt,
+.redeem-summary dd {
+  margin: 0;
+}
+
+.redeem-summary dt {
+  color: #80616e;
+  font-size: 9px;
+  font-weight: 850;
+  letter-spacing: .06em;
+}
+
+.redeem-summary dd {
+  max-width: 60%;
+  overflow-wrap: anywhere;
+  color: #604653;
+  font-size: 12px;
+  font-weight: 800;
+  text-align: right;
+}
+
+.redeem-explanation {
+  margin: 5px 0;
+  color: #80616e;
+  font-size: 11px;
+  line-height: 1.4;
+}
+
+.redeem-explanation a {
+  color: #d75d91;
+  font-weight: 800;
+}
+
+.shop-redeem-error {
+  min-height: 17px;
+  margin: 12px 0 0;
+  color: #b34564;
+  font-size: 11px;
+}
+
+.shop-redeem-requested h3 {
+  margin-bottom: 14px;
+  font-size: 27px;
+}
+
+.requested-for {
+  margin: 18px 0 14px;
+  color: #80616e;
+  font-size: 10px;
+  font-weight: 850;
+  letter-spacing: .08em;
+  line-height: 1.5;
+}
+
+.requested-for strong {
+  color: #604653;
+  font-size: 14px;
+  letter-spacing: 0;
+}
+
+.fulfillment-badge {
+  display: inline-block;
+  margin: 14px 0 20px;
+  padding: 8px 12px;
+  border: 1px solid rgba(215, 93, 145, .24);
+  border-radius: 999px;
+  background: rgba(241, 184, 210, .22);
+  color: #d75d91;
+  font-size: 10px;
+  font-weight: 850;
+  letter-spacing: .08em;
 }
 
 .username-gate {

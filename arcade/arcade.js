@@ -30,6 +30,10 @@
     `${SUPABASE_URL}/functions/v1/submit-arcade-game`;
   const GET_PLAYER_ENDPOINT =
     `${SUPABASE_URL}/functions/v1/get-arcade-player`;
+  const PURCHASE_REWARD_ENDPOINT =
+    `${SUPABASE_URL}/functions/v1/purchase-arcade-reward`;
+  const REDEEM_REWARD_ENDPOINT =
+    `${SUPABASE_URL}/functions/v1/redeem-arcade-reward`;
 
   const PIECES = [
     { level: 1, radius: 16, score: 2, fill: "#ef9cba", image: null },
@@ -73,8 +77,42 @@
   const closeShopButton = document.getElementById("closeShop");
   const shopBackdrop = shopOverlay.querySelector(".shop-overlay__backdrop");
   const shopMeiowPoints = document.getElementById("shopMeiowPoints");
+  const shopCatalogHeader = document.getElementById("shopCatalogHeader");
   const shopStatus = document.getElementById("shopStatus");
   const shopRewards = document.getElementById("shopRewards");
+  const shopCatalog = document.getElementById("shopCatalog");
+  const shopConfirmation = document.getElementById("shopConfirmation");
+  const shopSuccess = document.getElementById("shopSuccess");
+  const confirmationRewardName = document.getElementById("confirmationRewardName");
+  const confirmationRewardImage = document.getElementById("confirmationRewardImage");
+  const confirmationCost = document.getElementById("confirmationCost");
+  const confirmationBalance = document.getElementById("confirmationBalance");
+  const confirmationAfter = document.getElementById("confirmationAfter");
+  const cancelPurchaseButton = document.getElementById("cancelPurchase");
+  const confirmPurchaseButton = document.getElementById("confirmPurchase");
+  const purchaseError = document.getElementById("purchaseError");
+  const purchaseGreeting = document.getElementById("purchaseGreeting");
+  const successRewardImage = document.getElementById("successRewardImage");
+  const successRewardName = document.getElementById("successRewardName");
+  const redemptionCode = document.getElementById("redemptionCode");
+  const successBalance = document.getElementById("successBalance");
+  const backToShopButton = document.getElementById("backToShop");
+  const redeemRewardButton = document.getElementById("redeemReward");
+  const shopRedeemConfirmation = document.getElementById("shopRedeemConfirmation");
+  const shopRedeemRequested = document.getElementById("shopRedeemRequested");
+  const redeemRewardImage = document.getElementById("redeemRewardImage");
+  const redeemRewardName = document.getElementById("redeemRewardName");
+  const redeemUsername = document.getElementById("redeemUsername");
+  const redeemCode = document.getElementById("redeemCode");
+  const backFromRedeemButton = document.getElementById("backFromRedeem");
+  const confirmRedeemButton = document.getElementById("confirmRedeem");
+  const redeemErrorElement = document.getElementById("redeemError");
+  const requestedRewardImage = document.getElementById("requestedRewardImage");
+  const requestedRewardName = document.getElementById("requestedRewardName");
+  const requestedCode = document.getElementById("requestedCode");
+  const requestedUsername = document.getElementById("requestedUsername");
+  const fulfillmentBadge = document.getElementById("fulfillmentBadge");
+  const backFromRequestedButton = document.getElementById("backFromRequested");
   const devButtons = document.querySelectorAll("[data-spawn-level], [data-clear-board]");
 
   const engine = Engine.create({
@@ -108,6 +146,15 @@
   let shopWasGameplayActive = false;
   let shopReturnFocus = null;
   let shopRewardsRequestId = 0;
+  let shopRewardsData = [];
+  let selectedReward = null;
+  let purchasePending = false;
+  let lastPurchase = null;
+  let purchaseRequestId = 0;
+  let redeemPending = false;
+  let redeemRequested = false;
+  let redeemError = "";
+  let redeemRequestId = 0;
 
   /* ==========================================================
      USERNAME STATE
@@ -171,6 +218,7 @@
 
     headerMeiowPoints.textContent = balance;
     shopMeiowPoints.textContent = `${balance} MEIOW POINTS`;
+    updateShopEligibility();
   }
 
   function setGameplayAccess(enabled) {
@@ -204,9 +252,17 @@
     currentMeiowPoints = null;
     updateUsernameDisplay();
     updateMeiowPointsDisplay();
+    selectedReward = null;
+    lastPurchase = null;
+    redeemPending = false;
+    redeemRequested = false;
+    redeemError = "";
     usernameGate.classList.remove("is-open");
     usernameGate.setAttribute("aria-hidden", "true");
-    setGameplayAccess(true);
+    setGameplayAccess(!shopOverlay.classList.contains("is-open"));
+    if (shopOverlay.classList.contains("is-open")) {
+      showShopCatalog();
+    }
     loadCurrentPlayer();
     gameStatus.textContent = "Move, then tap or click to drop.";
     canvas.focus({ preventScroll: true });
@@ -333,13 +389,64 @@
     }
   }
 
+  function rewardImageElement(imageUrl, className = "reward-image") {
+    if (imageUrl) {
+      const image = document.createElement("img");
+      image.className = className;
+      image.src = imageUrl;
+      image.alt = "";
+      return image;
+    }
+
+    const placeholder = document.createElement("div");
+    const label = document.createElement("span");
+    placeholder.className = className;
+    label.textContent = "ZEM\nGIFT";
+    placeholder.append(label);
+    return placeholder;
+  }
+
+  function rewardEligibility(reward) {
+    if (Number(reward.stock) === 0) {
+      return { label: "OUT OF STOCK", disabled: true };
+    }
+
+    if (currentMeiowPoints == null) {
+      return { label: "BALANCE UNAVAILABLE", disabled: true };
+    }
+
+    if (currentMeiowPoints < Number(reward.cost)) {
+      return { label: "NOT ENOUGH MEIOW POINTS", disabled: true };
+    }
+
+    if (purchasePending) {
+      return { label: "PURCHASING...", disabled: true };
+    }
+
+    return { label: "BUY", disabled: false };
+  }
+
+  function updateShopEligibility() {
+    shopRewards.querySelectorAll(".reward-buy").forEach((button) => {
+      const reward = shopRewardsData.find(
+        (item) => String(item.id) === button.dataset.rewardId
+      );
+
+      if (!reward) {
+        return;
+      }
+
+      const eligibility = rewardEligibility(reward);
+      button.disabled = eligibility.disabled;
+      button.textContent = eligibility.label;
+    });
+  }
+
   function renderShopRewards(rewards) {
     shopRewards.replaceChildren();
 
     rewards.forEach((reward) => {
       const card = document.createElement("article");
-      const image = document.createElement("div");
-      const imageLabel = document.createElement("span");
       const title = document.createElement("h3");
       const cost = document.createElement("p");
       const costValue = document.createElement("strong");
@@ -348,9 +455,7 @@
       const buy = document.createElement("button");
 
       card.className = "reward-card";
-      image.className = "reward-image";
-      imageLabel.textContent = "ZEM\nGIFT";
-      image.append(imageLabel);
+      const image = rewardImageElement(reward.image_url);
       title.textContent = reward.name;
       cost.className = "reward-cost";
       costValue.textContent = Number(reward.cost).toLocaleString();
@@ -366,11 +471,383 @@
 
       buy.className = "reward-buy";
       buy.type = "button";
-      buy.disabled = true;
-      buy.textContent = reward.stock === 0 ? "OUT OF STOCK" : "BUY";
+      buy.dataset.rewardId = String(reward.id);
+      buy.addEventListener("click", () => openPurchaseConfirmation(reward));
       card.append(image, title, cost, stock, buy);
       shopRewards.append(card);
     });
+
+    updateShopEligibility();
+  }
+
+  function showShopCatalog() {
+    shopCatalogHeader.hidden = false;
+    shopCatalog.hidden = false;
+    shopConfirmation.hidden = true;
+    shopSuccess.hidden = true;
+    shopRedeemConfirmation.hidden = true;
+    shopRedeemRequested.hidden = true;
+    shopStatus.hidden = false;
+  }
+
+  function showPurchaseConfirmation(reward) {
+    shopCatalogHeader.hidden = true;
+    shopCatalog.hidden = true;
+    shopStatus.hidden = true;
+    shopConfirmation.hidden = false;
+    shopSuccess.hidden = true;
+    shopRedeemConfirmation.hidden = true;
+    shopRedeemRequested.hidden = true;
+    confirmationRewardImage.replaceChildren(
+      rewardImageElement(reward.image_url)
+    );
+    confirmationRewardName.textContent = reward.name;
+    confirmationCost.textContent = `${Number(reward.cost).toLocaleString()} MP`;
+    confirmationBalance.textContent = currentMeiowPoints == null
+      ? "— MP"
+      : `${Number(currentMeiowPoints).toLocaleString()} MP`;
+    confirmationAfter.textContent = currentMeiowPoints == null
+      ? ""
+      : `${Math.max(0, currentMeiowPoints - Number(reward.cost)).toLocaleString()} MP`;
+    purchaseError.textContent = "";
+    confirmPurchaseButton.disabled = false;
+    confirmPurchaseButton.textContent = `BUY · ${Number(reward.cost).toLocaleString()} MP`;
+  }
+
+  function openPurchaseConfirmation(reward) {
+    const eligibility = rewardEligibility(reward);
+
+    if (eligibility.disabled || purchasePending) {
+      return;
+    }
+
+    selectedReward = reward;
+    showPurchaseConfirmation(reward);
+    confirmPurchaseButton.focus();
+  }
+
+  function closePurchaseConfirmation() {
+    if (purchasePending) {
+      return;
+    }
+
+    selectedReward = null;
+    purchaseError.textContent = "";
+    showShopCatalog();
+  }
+
+  function purchaseErrorMessage(errorText) {
+    const message = String(errorText || "").toLowerCase();
+
+    if (message.includes("not enough") || message.includes("meiow")) {
+      return "NOT ENOUGH MEIOW POINTS";
+    }
+
+    if (message.includes("out of stock") || message.includes("stock")) {
+      return "OUT OF STOCK";
+    }
+
+    if (message.includes("unavailable")) {
+      return "Reward is unavailable.";
+    }
+
+    if (message.includes("player not found")) {
+      return "Player not found.";
+    }
+
+    return "Purchase could not be completed. Please try again.";
+  }
+
+  function renderPurchaseSuccess(purchase) {
+    shopCatalog.hidden = true;
+    shopStatus.hidden = true;
+    shopConfirmation.hidden = true;
+    shopSuccess.hidden = false;
+    shopRedeemConfirmation.hidden = true;
+    shopRedeemRequested.hidden = true;
+    purchaseGreeting.textContent = `CONGRATULATIONS, ${displayUsername(purchase.username)}!`;
+    successRewardImage.replaceChildren();
+    if (selectedReward && selectedReward.image_url) {
+      const image = document.createElement("img");
+      image.src = selectedReward.image_url;
+      image.alt = "";
+      successRewardImage.append(image);
+    } else {
+      const label = document.createElement("span");
+      label.textContent = "ZEM\nGIFT";
+      successRewardImage.append(label);
+    }
+    successRewardName.textContent = purchase.rewardName;
+    redemptionCode.textContent = purchase.redemptionCode;
+    successBalance.textContent = `${Number(purchase.remainingMeiowPoints).toLocaleString()} MEIOW POINTS LEFT`;
+    redeemRequested = false;
+    redeemPending = false;
+    redeemError = "";
+    updateRedeemEligibility();
+  }
+
+  function updateRedeemEligibility() {
+    const purchase = lastPurchase;
+    const enabled = Boolean(
+      purchase &&
+      purchase.redemptionCode &&
+      purchase.username &&
+      purchase.status === "pending" &&
+      !redeemPending &&
+      !redeemRequested
+    );
+
+    redeemRewardButton.disabled = !enabled;
+    redeemRewardButton.textContent = redeemPending ? "SENDING..." : "REDEEM";
+  }
+
+  function renderRedeemRewardImage(container) {
+    container.replaceChildren();
+    if (selectedReward && selectedReward.image_url) {
+      const image = document.createElement("img");
+      image.src = selectedReward.image_url;
+      image.alt = "";
+      container.append(image);
+    } else {
+      const label = document.createElement("span");
+      label.textContent = "ZEM\nGIFT";
+      container.append(label);
+    }
+  }
+
+  function showRedeemConfirmation() {
+    if (!lastPurchase || redeemPending || redeemRequested) {
+      return;
+    }
+
+    shopCatalogHeader.hidden = true;
+    shopCatalog.hidden = true;
+    shopStatus.hidden = true;
+    shopSuccess.hidden = true;
+    shopConfirmation.hidden = true;
+    shopRedeemRequested.hidden = true;
+    shopRedeemConfirmation.hidden = false;
+    renderRedeemRewardImage(redeemRewardImage);
+    redeemRewardName.textContent = lastPurchase.rewardName;
+    redeemUsername.textContent = displayUsername(lastPurchase.username);
+    redeemCode.textContent = lastPurchase.redemptionCode;
+    redeemErrorElement.textContent = redeemError;
+    confirmRedeemButton.disabled = false;
+    confirmRedeemButton.textContent = "REDEEM";
+    confirmRedeemButton.focus();
+  }
+
+  function showPurchaseSuccessView() {
+    shopCatalogHeader.hidden = true;
+    shopCatalog.hidden = true;
+    shopStatus.hidden = true;
+    shopConfirmation.hidden = true;
+    shopRedeemConfirmation.hidden = true;
+    shopRedeemRequested.hidden = true;
+    shopSuccess.hidden = false;
+    updateRedeemEligibility();
+  }
+
+  function showRedemptionRequested(purchase, status) {
+    shopCatalogHeader.hidden = true;
+    shopCatalog.hidden = true;
+    shopStatus.hidden = true;
+    shopConfirmation.hidden = true;
+    shopSuccess.hidden = true;
+    shopRedeemConfirmation.hidden = true;
+    shopRedeemRequested.hidden = false;
+    renderRedeemRewardImage(requestedRewardImage);
+    requestedRewardName.textContent = purchase.rewardName;
+    requestedCode.textContent = purchase.redemptionCode;
+    requestedUsername.textContent = displayUsername(purchase.username);
+    fulfillmentBadge.textContent = status === "fulfilled"
+      ? "FULFILLED"
+      : "PENDING FULFILLMENT";
+  }
+
+  function redeemErrorMessage(errorText) {
+    const message = String(errorText || "").toLowerCase();
+
+    if (message.includes("cancel")) {
+      return "This redemption is no longer available.";
+    }
+
+    return "Redemption request could not be sent. Please try again.";
+  }
+
+  async function submitRedemption() {
+    if (
+      redeemPending ||
+      redeemRequested ||
+      !lastPurchase ||
+      !lastPurchase.username ||
+      !lastPurchase.redemptionCode ||
+      lastPurchase.status !== "pending"
+    ) {
+      return;
+    }
+
+    const capturedUsername = lastPurchase.username;
+    const capturedRedemptionCode = lastPurchase.redemptionCode;
+    const requestId = ++redeemRequestId;
+    redeemPending = true;
+    confirmRedeemButton.disabled = true;
+    confirmRedeemButton.textContent = "SENDING...";
+    redeemErrorElement.textContent = "";
+    updateRedeemEligibility();
+
+    try {
+      const response = await fetch(REDEEM_REWARD_ENDPOINT, {
+        method: "POST",
+        headers: {
+          ...supabaseHeaders,
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          username: capturedUsername,
+          redemptionCode: capturedRedemptionCode
+        })
+      });
+
+      const result = await response.json().catch(() => ({}));
+      const redemption = result.redemption || result.purchase || {};
+      const alreadyRequested =
+        result.alreadyRequested === true ||
+        redemption.alreadyRequested === true ||
+        redemption.status === "already_requested" ||
+        result.status === "already_requested";
+      const status = redemption.status || result.status || (alreadyRequested ? "redeem_requested" : "");
+
+      if (
+        !response.ok ||
+        result.ok !== true ||
+        (!alreadyRequested && !["pending", "redeem_requested", "requested", "already_requested", "fulfilled"].includes(status))
+      ) {
+        throw new Error(result.error || result.message || "Redemption failed");
+      }
+
+      if (
+        redemption.username &&
+        normalizeUsername(String(redemption.username)) !== normalizeUsername(String(capturedUsername))
+      ) {
+        throw new Error("Redemption username mismatch");
+      }
+
+      if (
+        redemption.redemptionCode &&
+        String(redemption.redemptionCode) !== String(capturedRedemptionCode)
+      ) {
+        throw new Error("Redemption code mismatch");
+      }
+
+      if (requestId !== redeemRequestId) {
+        return;
+      }
+
+      redeemPending = false;
+      redeemRequested = true;
+      lastPurchase.status = status === "fulfilled" ? "fulfilled" : "redeem_requested";
+      showRedemptionRequested(lastPurchase, lastPurchase.status);
+    } catch (error) {
+      if (requestId !== redeemRequestId) {
+        return;
+      }
+
+      redeemPending = false;
+      redeemError = redeemErrorMessage(error.message);
+      redeemErrorElement.textContent = redeemError;
+      confirmRedeemButton.disabled = false;
+      confirmRedeemButton.textContent = "REDEEM";
+      console.error("Arcade redemption request failed:", error);
+    }
+  }
+
+  async function purchaseSelectedReward() {
+    if (!selectedReward || purchasePending || !shopOverlay.classList.contains("is-open")) {
+      return;
+    }
+
+    const capturedUsername = currentUsername;
+    const capturedRewardId = selectedReward.id;
+    const capturedCost = selectedReward.cost;
+    const requestId = ++purchaseRequestId;
+    purchasePending = true;
+    confirmPurchaseButton.disabled = true;
+    confirmPurchaseButton.textContent = "PURCHASING...";
+    updateShopEligibility();
+
+    try {
+      const response = await fetch(PURCHASE_REWARD_ENDPOINT, {
+        method: "POST",
+        headers: {
+          ...supabaseHeaders,
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          username: capturedUsername,
+          rewardId: capturedRewardId
+        })
+      });
+
+      const result = await response.json().catch(() => ({}));
+
+      if (!response.ok || result.ok !== true || !result.purchase) {
+        throw new Error(result.error || result.message || "Purchase failed");
+      }
+
+      const purchase = result.purchase;
+
+      if (
+        purchase.rewardId == null ||
+        String(purchase.rewardId) !== String(capturedRewardId) ||
+        purchase.username == null ||
+        normalizeUsername(String(purchase.username)) !== normalizeUsername(capturedUsername) ||
+        purchase.redemptionCode == null ||
+        purchase.rewardName == null ||
+        purchase.remainingMeiowPoints == null ||
+        !Object.prototype.hasOwnProperty.call(purchase, "remainingStock")
+      ) {
+        throw new Error("Purchase returned an invalid result");
+      }
+
+      if (requestId !== purchaseRequestId) {
+        return;
+      }
+
+      if (capturedUsername === currentUsername) {
+        currentMeiowPoints = purchase.remainingMeiowPoints;
+        updateMeiowPointsDisplay();
+      }
+
+      const matchingReward = shopRewardsData.find(
+        (reward) => String(reward.id) === String(capturedRewardId)
+      );
+
+      if (matchingReward) {
+        matchingReward.stock = purchase.remainingStock;
+      }
+
+      lastPurchase = purchase;
+      purchasePending = false;
+      renderPurchaseSuccess(purchase);
+      loadShopRewards();
+    } catch (error) {
+      if (requestId !== purchaseRequestId) {
+        return;
+      }
+
+      purchasePending = false;
+      confirmPurchaseButton.disabled = false;
+      confirmPurchaseButton.textContent = `BUY · ${Number(capturedCost).toLocaleString()} MP`;
+      purchaseError.textContent = purchaseErrorMessage(error.message);
+      updateShopEligibility();
+      console.error("Arcade reward purchase failed:", error);
+
+      if (/stock|not enough|meiow/i.test(error.message)) {
+        loadCurrentPlayer();
+        loadShopRewards();
+      }
+    }
   }
 
   async function loadShopRewards() {
@@ -395,7 +872,8 @@
         return;
       }
 
-      renderShopRewards(Array.isArray(rewards) ? rewards : []);
+      shopRewardsData = Array.isArray(rewards) ? rewards : [];
+      renderShopRewards(shopRewardsData);
       shopStatus.textContent = rewards.length ? "" : "No rewards available right now.";
     } catch (error) {
       if (requestId !== shopRewardsRequestId) {
@@ -419,12 +897,19 @@
     document.body.style.overflow = "hidden";
     shopOverlay.classList.add("is-open");
     shopOverlay.setAttribute("aria-hidden", "false");
+    selectedReward = null;
+    purchaseError.textContent = "";
+    showShopCatalog();
     loadShopRewards();
     loadCurrentPlayer();
     closeShopButton.focus();
   }
 
   function closeShop() {
+    if (purchasePending || redeemPending) {
+      return;
+    }
+
     shopOverlay.classList.remove("is-open");
     shopOverlay.setAttribute("aria-hidden", "true");
     document.body.style.overflow = "";
@@ -855,13 +1340,39 @@
   openShopButton.addEventListener("click", openShop);
   closeShopButton.addEventListener("click", closeShop);
   shopBackdrop.addEventListener("click", closeShop);
+  cancelPurchaseButton.addEventListener("click", closePurchaseConfirmation);
+  confirmPurchaseButton.addEventListener("click", purchaseSelectedReward);
+  backToShopButton.addEventListener("click", () => {
+    if (purchasePending || redeemPending) {
+      return;
+    }
+    selectedReward = null;
+    showShopCatalog();
+    loadShopRewards();
+  });
+  redeemRewardButton.addEventListener("click", showRedeemConfirmation);
+  backFromRedeemButton.addEventListener("click", () => {
+    if (redeemPending) {
+      return;
+    }
+    showPurchaseSuccessView();
+  });
+  confirmRedeemButton.addEventListener("click", submitRedemption);
+  backFromRequestedButton.addEventListener("click", () => {
+    if (redeemPending) {
+      return;
+    }
+    selectedReward = null;
+    showShopCatalog();
+    loadShopRewards();
+  });
 
   document.addEventListener("keydown", (event) => {
     if (event.key !== "Escape") {
       return;
     }
 
-    if (shopOverlay.classList.contains("is-open")) {
+    if (shopOverlay.classList.contains("is-open") && !purchasePending && !redeemPending) {
       closeShop();
     }
   });

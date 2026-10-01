@@ -112,17 +112,95 @@
       aria-describedby="shopDescription"
     >
       <button class="shop-close" id="closeShop" type="button" aria-label="Close shop">×</button>
-      <p class="eyebrow">MEICAT ARCADE</p>
-      <h2 id="shopTitle">SHOP</h2>
-      <div class="shop-balance">
-        <span>YOUR BALANCE</span>
-        <strong id="shopMeiowPoints">— MEIOW POINTS</strong>
+      <div class="shop-catalog-header" id="shopCatalogHeader">
+        <p class="eyebrow">MEICAT ARCADE</p>
+        <h2 id="shopTitle">SHOP</h2>
+        <div class="shop-balance">
+          <span>YOUR BALANCE</span>
+          <strong id="shopMeiowPoints">— MEIOW POINTS</strong>
+        </div>
+        <p class="shop-description" id="shopDescription">
+          Rewards are manually sent by Meicat. <a href="https://discord.gg/yksRxpZSrE" target="_blank" rel="noopener noreferrer">Join Discord</a> for updates.
+        </p>
       </div>
-      <p class="shop-description" id="shopDescription">
-        Rewards are manually sent by Meicat. <a href="https://discord.gg/yksRxpZSrE" target="_blank" rel="noopener noreferrer">Join Discord</a> for updates.
-      </p>
       <div class="shop-status" id="shopStatus" role="status">Loading...</div>
-      <div class="shop-rewards" id="shopRewards"></div>
+      <div class="shop-catalog" id="shopCatalog">
+        <div class="shop-rewards" id="shopRewards"></div>
+      </div>
+      <div class="shop-confirmation" id="shopConfirmation" hidden>
+        <p class="eyebrow">MEICAT ARCADE</p>
+        <h3>BUY THIS REWARD?</h3>
+        <div class="confirmation-reward-image" id="confirmationRewardImage"></div>
+        <p class="shop-confirmation-name" id="confirmationRewardName"></p>
+        <dl class="purchase-summary">
+          <div>
+            <dt>COST</dt>
+            <dd id="confirmationCost"></dd>
+          </div>
+          <div>
+            <dt>YOUR BALANCE</dt>
+            <dd id="confirmationBalance"></dd>
+          </div>
+          <div class="purchase-summary-after">
+            <dt>AFTER PURCHASE</dt>
+            <dd id="confirmationAfter"></dd>
+          </div>
+        </dl>
+        <div class="shop-confirmation-actions">
+          <button id="cancelPurchase" type="button">CANCEL</button>
+          <button id="confirmPurchase" type="button">BUY</button>
+        </div>
+        <p class="shop-purchase-error" id="purchaseError" role="alert"></p>
+      </div>
+      <div class="shop-success" id="shopSuccess" hidden>
+        <p class="eyebrow">MEICAT ARCADE</p>
+        <h3 id="purchaseGreeting">CONGRATULATIONS!</h3>
+        <p class="shop-success-label">YOU BOUGHT</p>
+        <div class="reward-image shop-success-image" id="successRewardImage"></div>
+        <h4 id="successRewardName"></h4>
+        <p class="shop-success-label">REDEMPTION</p>
+        <code id="redemptionCode"></code>
+        <p class="shop-success-balance" id="successBalance"></p>
+        <button class="reward-buy shop-success-redeem" id="redeemReward" type="button" disabled>REDEEM</button>
+        <button class="shop-back" id="backToShop" type="button">BACK TO SHOP</button>
+      </div>
+      <div class="shop-redeem-confirmation" id="shopRedeemConfirmation" hidden>
+        <p class="eyebrow">MEICAT ARCADE</p>
+        <h3>REDEEM THIS REWARD?</h3>
+        <div class="reward-image redeem-reward-image" id="redeemRewardImage"></div>
+        <h4 id="redeemRewardName"></h4>
+        <dl class="redeem-summary">
+          <div>
+            <dt>ZEPETO USERNAME</dt>
+            <dd id="redeemUsername"></dd>
+          </div>
+          <div>
+            <dt>REDEMPTION CODE</dt>
+            <dd id="redeemCode"></dd>
+          </div>
+        </dl>
+        <p class="redeem-explanation">Rewards are manually sent by Meicat.</p>
+        <p class="redeem-explanation"> <a href="https://discord.gg/yksRxpZSrE" target="_blank" rel="noopener noreferrer">Join Discord</a> for redemption updates.</p>
+        <div class="shop-confirmation-actions">
+          <button id="backFromRedeem" type="button">BACK</button>
+          <button id="confirmRedeem" type="button">REDEEM</button>
+        </div>
+        <p class="shop-redeem-error" id="redeemError" role="alert"></p>
+      </div>
+      <div class="shop-redeem-requested" id="shopRedeemRequested" hidden>
+        <p class="eyebrow">MEICAT ARCADE</p>
+        <h3>REDEMPTION REQUESTED!</h3>
+        <div class="reward-image redeem-reward-image" id="requestedRewardImage"></div>
+        <h4 id="requestedRewardName"></h4>
+        <p class="shop-success-label">REDEMPTION</p>
+        <code id="requestedCode"></code>
+        <p class="requested-for">REQUEST SENT FOR<br><strong id="requestedUsername"></strong></p>
+        <p class="redeem-explanation">Your redemption request was sent to Meicat.</p>
+        <p class="redeem-explanation">Rewards are manually fulfilled in ZEPETO.</p>
+        <p class="redeem-explanation"><a href="https://discord.gg/yksRxpZSrE" target="_blank" rel="noopener noreferrer">Join Discord</a> for redemption updates.</p>
+        <p class="fulfillment-badge" id="fulfillmentBadge">PENDING FULFILLMENT</p>
+        <button class="shop-back" id="backFromRequested" type="button">BACK TO SHOP</button>
+      </div>
     </section>
   </div>
 
