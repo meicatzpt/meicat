@@ -68,7 +68,10 @@ document.addEventListener("DOMContentLoaded", () => {
   ];
 
 
-  let activeWorldIndex = 0;
+  let activeWorldIndex =
+    new URLSearchParams(window.location.search).get("world") === "braincell"
+      ? 1
+      : 0;
   let worldIsAnimating = false;
 
 
@@ -265,6 +268,11 @@ document.addEventListener("DOMContentLoaded", () => {
     "click",
     () => {
 
+      if (activeWorldIndex === 1) {
+        window.location.href = "top-gifters/";
+        return;
+      }
+
       changeWorld(
         activeWorldIndex + 1,
         "next"
@@ -281,6 +289,11 @@ document.addEventListener("DOMContentLoaded", () => {
   previousButton.addEventListener(
     "click",
     () => {
+
+      if (activeWorldIndex === 0) {
+        window.location.href = "top-gifters/";
+        return;
+      }
 
       changeWorld(
         activeWorldIndex - 1,
@@ -1278,13 +1291,18 @@ document.addEventListener("DOMContentLoaded", () => {
      INITIAL WORLD STATE
      ======================================================== */
 
+  const worldStage =
+    document.querySelector(".world-stage");
+
+  worldStage.style.transition = "none";
+
   worlds.forEach(
     (world, index) => {
 
       cleanWorldClasses(world);
 
       const isInitialWorld =
-        index === 0;
+        index === activeWorldIndex;
 
 
       world.classList.toggle(
@@ -1304,6 +1322,10 @@ document.addEventListener("DOMContentLoaded", () => {
   );
 
 
-  updateTheme(0);
+  updateTheme(activeWorldIndex);
+
+  void worldStage.offsetWidth;
+
+  worldStage.style.removeProperty("transition");
 
 });
