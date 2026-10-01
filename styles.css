@@ -5875,8 +5875,9 @@ and
   cursor: default;
 }
 
-/* Only Main Mei is interactive */
-.world--meicat .meicat-avatar--1 {
+/* Only Main Mei and its artwork are interactive. Image clicks bubble to the wrapper. */
+.world--meicat .meicat-avatar--1,
+.world--meicat .meicat-avatar--1 img {
   pointer-events: auto !important;
   cursor: pointer;
 }
@@ -6031,9 +6032,9 @@ and
   object-position: center bottom;
     }
 
-  /* Mobile — avatars are display-only */
-  .world--meicat .meicat-avatar,
-  .world--meicat .meicat-avatar img {
+  /* Mobile — only background avatars are display-only. */
+  .world--meicat .meicat-avatar:not(.meicat-avatar--1),
+  .world--meicat .meicat-avatar:not(.meicat-avatar--1) img {
     pointer-events: none !important;
     cursor: default;
   }
